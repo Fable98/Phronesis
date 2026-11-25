@@ -9,6 +9,7 @@ import { apiRateLimiter } from "./middleware/rateLimit";
 import authRoutes from "./modules/auth/auth.routes";
 import coursesRoutes from "./modules/courses/courses.routes";
 import enrollmentsRoutes from "./modules/enrollments/enrollments.routes";
+import filesRoutes from "./modules/files/files.routes";
 import lessonsRoutes from "./modules/lessons/lessons.routes";
 import modulesRoutes from "./modules/modules/modules.routes";
 import progressRoutes from "./modules/progress/progress.routes";
@@ -41,6 +42,7 @@ export function createApp() {
   app.use("/api/v1", modulesRoutes);
   app.use("/api/v1", lessonsRoutes);
   app.use("/api/v1", progressRoutes);
+  app.use("/api/v1", filesRoutes);
 
   app.use((_req, _res, next) => {
     next(new NotFoundError("Endpoint not found"));
