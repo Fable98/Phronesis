@@ -14,6 +14,7 @@ import filesRoutes from "./modules/files/files.routes";
 import lessonsRoutes from "./modules/lessons/lessons.routes";
 import modulesRoutes from "./modules/modules/modules.routes";
 import progressRoutes from "./modules/progress/progress.routes";
+import quizzesRoutes from "./modules/quizzes/quizzes.routes";
 import submissionsRoutes from "./modules/submissions/submissions.routes";
 import usersRoutes from "./modules/users/users.routes";
 import { NotFoundError } from "./utils/errors";
@@ -47,6 +48,7 @@ export function createApp() {
   app.use("/api/v1", filesRoutes);
   app.use("/api/v1", assignmentsRoutes);
   app.use("/api/v1", submissionsRoutes);
+  app.use("/api/v1", quizzesRoutes);
 
   app.use((_req, _res, next) => {
     next(new NotFoundError("Endpoint not found"));
