@@ -6,6 +6,7 @@ import { env } from "./config/env";
 import { requireCsrf } from "./middleware/csrf";
 import { errorHandler } from "./middleware/errorHandler";
 import { apiRateLimiter } from "./middleware/rateLimit";
+import assignmentsRoutes from "./modules/assignments/assignments.routes";
 import authRoutes from "./modules/auth/auth.routes";
 import coursesRoutes from "./modules/courses/courses.routes";
 import enrollmentsRoutes from "./modules/enrollments/enrollments.routes";
@@ -13,6 +14,7 @@ import filesRoutes from "./modules/files/files.routes";
 import lessonsRoutes from "./modules/lessons/lessons.routes";
 import modulesRoutes from "./modules/modules/modules.routes";
 import progressRoutes from "./modules/progress/progress.routes";
+import submissionsRoutes from "./modules/submissions/submissions.routes";
 import usersRoutes from "./modules/users/users.routes";
 import { NotFoundError } from "./utils/errors";
 
@@ -43,6 +45,8 @@ export function createApp() {
   app.use("/api/v1", lessonsRoutes);
   app.use("/api/v1", progressRoutes);
   app.use("/api/v1", filesRoutes);
+  app.use("/api/v1", assignmentsRoutes);
+  app.use("/api/v1", submissionsRoutes);
 
   app.use((_req, _res, next) => {
     next(new NotFoundError("Endpoint not found"));
