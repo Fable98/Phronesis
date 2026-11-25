@@ -139,4 +139,79 @@ describe("Quiz Engine", () => {
       .set("X-CSRF-Token", student.csrfToken);
     expect(exceedMax.status).toBe(409);
   });
+
+  it("grades expired attempt using only previously saved answers and marks EXPIRED", async () => {
+    const inst = await createUserAndLogin(app, {
+      email: "inst-exp@test.edu",
+      name: "Instructor Exp",
+      role: Role.INSTRUCTOR
+    });
+    const student = await createUserAndLogin(app, {
+      email: "stud-exp@test.edu",
+      name: "Student Exp",
+      role: Role.STUDENT
+    });
+
+    const course = await prisma.course.create({
+      data: {
+        title: "Timed Quiz Course",
+        slug: "timed-quiz-course",
+        description: "Tests expiry grading.",
+        category: "CS",
+        status: CourseStatus.PUBLISHED,
+        publishedAt: new Date(),
+        instructorId: inst.user.id
+      }
+    });
+    const enrollment = await prisma.enrollment.create({
+      data: { studentId: student.user.id, courseId: course.id }
+    });
+    const quiz = await prisma.quiz.create({
+      data: {
+        courseId: course.id,
+        title: "Expired Quiz",
+        timeLimitMinutes: 5,
+        passingScore: 1,
+        maxAttempts: 2
+      }
+    });
+    const q1 = await prisma.question.create({
+      data: {
+        quizId: quiz.id,
+        prompt: "Q1",
+        points: 1,
+        position: 1,
+        options: {
+          create: [
+            { text: "Yes", isCorrect: true, position: 1 },
+            { text: "No", isCorrect: false, position: 2 }
+          ]
+        }
+      },
+      include: { options: true }
+    });
+
+    const attempt = await prisma.quizAttempt.create({
+      data: {
+        quizId: quiz.id,
+        studentId: student.user.id,
+        enrollmentId: enrollment.id,
+        startedAt: new Date(Date.now() - 10 * 60 * 1000),
+        expiresAt: new Date(Date.now() - 60 * 1000), // expired 60s ago (> 30s grace)
+        scoreMax: 1
+      }
+    });
+
+    // Submit after expiry with a new answer -> ignored, graded as EXPIRED with 0 saved answers
+    const submitExpired = await student.agent
+      .post(`/api/v1/attempts/${attempt.id}/submit`)
+      .set("X-CSRF-Token", student.csrfToken)
+      .send({
+        answers: [{ questionId: q1.id, selectedOptionId: q1.options[0]!.id }]
+      });
+    expect(submitExpired.status).toBe(200);
+    expect(submitExpired.body.data.attempt.status).toBe("EXPIRED");
+    expect(submitExpired.body.data.attempt.score).toBe(0);
+    expect(submitExpired.body.data.attempt.passed).toBe(false);
+  });
 });

@@ -123,4 +123,54 @@ describe("Courses & Lifecycle", () => {
       .send({ title: "Edited archived" });
     expect(editArchived.status).toBe(409);
   });
+
+  it("archives instead of deleting when enrollments exist and stays readable to enrolled student", async () => {
+    const inst = await createUserAndLogin(app, {
+      email: "inst-arch@test.edu",
+      name: "Instructor Arch",
+      role: Role.INSTRUCTOR
+    });
+    const student = await createUserAndLogin(app, {
+      email: "stud-arch@test.edu",
+      name: "Student Arch",
+      role: Role.STUDENT
+    });
+    const outsider = await createUserAndLogin(app, {
+      email: "out-arch@test.edu",
+      name: "Outsider",
+      role: Role.STUDENT
+    });
+
+    const course = await prisma.course.create({
+      data: {
+        title: "Archive Policy Course",
+        slug: "archive-policy-course",
+        description: "Tests archive instead of delete.",
+        category: "Engineering",
+        status: "PUBLISHED",
+        publishedAt: new Date(),
+        instructorId: inst.user.id
+      }
+    });
+
+    await prisma.enrollment.create({
+      data: { studentId: student.user.id, courseId: course.id }
+    });
+
+    // Delete with enrollment -> archives instead
+    const delRes = await inst.agent
+      .delete(`/api/v1/courses/${course.id}`)
+      .set("X-CSRF-Token", inst.csrfToken);
+    expect(delRes.status).toBe(200);
+    expect(delRes.body.data.archived).toBe(true);
+    expect(delRes.body.data.deleted).toBe(false);
+
+    // Enrolled student can still read archived course
+    const enrolledRead = await student.agent.get(`/api/v1/courses/${course.id}`);
+    expect(enrolledRead.status).toBe(200);
+
+    // Unenrolled student gets 404
+    const outsiderRead = await outsider.agent.get(`/api/v1/courses/${course.id}`);
+    expect(outsiderRead.status).toBe(404);
+  });
 });
