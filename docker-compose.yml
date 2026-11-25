@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: phronesis_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-phronesis}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-phronesis_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-phronesis}
+    ports:
+      - "${POSTGRES_PORT:-5436}:5432"
+    volumes:
+      - phronesis_pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-phronesis} -d ${POSTGRES_DB:-phronesis}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  phronesis_pgdata:
