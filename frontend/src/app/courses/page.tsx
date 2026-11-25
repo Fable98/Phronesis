@@ -70,6 +70,7 @@ function CatalogContent() {
           className="nb-input"
         >
           <option value="">All Categories</option>
+          <option value="Computer Science">Computer Science</option>
           <option value="Backend Engineering">Backend Engineering</option>
           <option value="Frontend Engineering">Frontend Engineering</option>
           <option value="Data Science">Data Science</option>

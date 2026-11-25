@@ -21,12 +21,311 @@ async function hashPassword(password: string): Promise<string> {
   });
 }
 
+async function ensurePlaylistCourses() {
+  const marcus = await prisma.user.findUnique({ where: { email: "marcus.chen@phronesis.edu" } });
+  const sofia = await prisma.user.findUnique({ where: { email: "sofia.patel@phronesis.edu" } });
+  if (!marcus || !sofia) {
+    return;
+  }
+
+  const playlistCourses = [
+    {
+      title: "Operating Systems",
+      slug: "operating-systems-gate-smashers",
+      description:
+        "Complete Operating Systems curriculum covering process management, CPU scheduling, synchronization, deadlocks, memory management, paging, and file systems — featuring GATE Smashers' complete video playlist.",
+      category: "Computer Science",
+      difficultyLevel: DifficultyLevel.INTERMEDIATE,
+      instructorId: marcus.id,
+      playlistUrl:
+        "https://youtube.com/playlist?list=PLxCzCOWd7aiGz9donHRrE9I3Mwn6XdP8p&si=koL8hitaQ8K75b-V",
+      embedUrl:
+        "https://www.youtube.com/embed/videoseries?list=PLxCzCOWd7aiGz9donHRrE9I3Mwn6XdP8p",
+      modules: [
+        {
+          title: "Module 1: Processes, Threads & CPU Scheduling",
+          lessons: [
+            {
+              title: "GATE Smashers OS Full Playlist & Process Lifecycle",
+              content:
+                "Watch the full GATE Smashers Operating Systems playlist embedded above.\n\nTopics covered in this module: OS goals, system calls, PCB, process states (New, Ready, Running, Waiting, Terminated), context switching, FCFS, SJF, SRTF, and Round Robin scheduling.",
+              useVideo: true,
+              durationMinutes: 45
+            },
+            {
+              title: "Process Synchronization & Semaphores",
+              content:
+                "Critical section problem, Peterson's solution, mutex locks, counting/binary semaphores, producer-consumer, readers-writers, and dining philosophers.",
+              useVideo: false,
+              durationMinutes: 30
+            }
+          ]
+        },
+        {
+          title: "Module 2: Deadlocks, Memory Management & Virtual Memory",
+          lessons: [
+            {
+              title: "Deadlocks & Banker's Algorithm",
+              content:
+                "Necessary conditions (Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait), resource allocation graphs, deadlock avoidance via Banker's Algorithm, and recovery strategies.",
+              useVideo: false,
+              durationMinutes: 35
+            },
+            {
+              title: "Paging, Segmentation & Page Replacement",
+              content:
+                "Logical vs physical address translation, page tables, TLB hit/miss effective access time, thrashing, FIFO, Optimal, and LRU page replacement algorithms.",
+              useVideo: false,
+              durationMinutes: 40
+            }
+          ]
+        }
+      ],
+      assignmentTitle: "CPU Scheduling & Banker's Algorithm Problem Set",
+      assignmentDesc:
+        "Analyze Gantt charts for Round Robin (q=2) vs SRTF on a 5-process workload and verify safe sequence execution using Banker's Algorithm.",
+      quizTitle: "Operating Systems Core Mastery Quiz",
+      quizQuestion: {
+        prompt: "Which condition is NOT one of the four Coffman conditions for deadlock?",
+        options: [
+          { text: "Mutual Exclusion", isCorrect: false },
+          { text: "Preemptive Scheduling", isCorrect: true },
+          { text: "Circular Wait", isCorrect: false }
+        ]
+      }
+    },
+    {
+      title: "Backend Principles",
+      slug: "backend-principles",
+      description:
+        "Master core backend engineering principles: networking protocols, REST & API design, databases, caching, message queues, scaling, and reliability patterns with full video playlist.",
+      category: "Backend Engineering",
+      difficultyLevel: DifficultyLevel.INTERMEDIATE,
+      instructorId: marcus.id,
+      playlistUrl:
+        "https://youtube.com/playlist?list=PLui3EUkuMTPgZcV0QhQrOcwMPcBCcd_Q1&si=L30za1rjxDbJMrY2",
+      embedUrl:
+        "https://www.youtube.com/embed/videoseries?list=PLui3EUkuMTPgZcV0QhQrOcwMPcBCcd_Q1",
+      modules: [
+        {
+          title: "Module 1: Networking, Protocols & API Foundations",
+          lessons: [
+            {
+              title: "Backend Principles Video Series & HTTP/TCP Internals",
+              content:
+                "Watch the full Backend Principles playlist embedded above.\n\nTopics covered: TCP three-way handshake, HTTP/1.1 vs HTTP/2 vs HTTP/3, TLS termination, reverse proxies, and stateless vs stateful services.",
+              useVideo: true,
+              durationMinutes: 40
+            },
+            {
+              title: "Idempotency, Rate Limiting & Error Handling",
+              content:
+                "Designing idempotent POST/PUT endpoints, token bucket and sliding window rate limiters, structured error envelopes, and graceful shutdown.",
+              useVideo: false,
+              durationMinutes: 30
+            }
+          ]
+        },
+        {
+          title: "Module 2: Storage, Caching & Asynchronous Processing",
+          lessons: [
+            {
+              title: "Database Transactions, Indexing & Connection Pooling",
+              content:
+                "ACID isolation levels, B-Tree vs Hash indexes, N+1 query elimination, and connection pool sizing under concurrency.",
+              useVideo: false,
+              durationMinutes: 35
+            },
+            {
+              title: "Caching Strategies & Message Queues",
+              content:
+                "Cache-aside vs write-through, cache invalidation pitfalls, pub/sub vs task queues, and dead-letter queues.",
+              useVideo: false,
+              durationMinutes: 30
+            }
+          ]
+        }
+      ],
+      assignmentTitle: "Design an Idempotent Payment & Webhook API",
+      assignmentDesc:
+        "Document the database schema, idempotency-key middleware, retry backoff, and rate-limiting strategy for a high-reliability backend endpoint.",
+      quizTitle: "Backend Principles Assessment",
+      quizQuestion: {
+        prompt: "Which caching pattern checks the cache first and falls back to the database on a miss?",
+        options: [
+          { text: "Cache-Aside (Lazy Loading)", isCorrect: true },
+          { text: "Write-Behind Only", isCorrect: false },
+          { text: "Round-Robin DNS", isCorrect: false }
+        ]
+      }
+    },
+    {
+      title: "Data Structures & Algorithms (DSA)",
+      slug: "data-structures-algorithms-dsa",
+      description:
+        "Structured Data Structures and Algorithms course covering recursion, arrays, linked lists, trees, graphs, dynamic programming, and greedy algorithms with full video playlist.",
+      category: "Computer Science",
+      difficultyLevel: DifficultyLevel.INTERMEDIATE,
+      instructorId: sofia.id,
+      playlistUrl:
+        "https://youtube.com/playlist?list=PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz&si=gao1Bj67UIPUDdRl",
+      embedUrl:
+        "https://www.youtube.com/embed/videoseries?list=PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz",
+      modules: [
+        {
+          title: "Module 1: Complexity, Arrays, Recursion & Trees",
+          lessons: [
+            {
+              title: "Complete DSA Playlist & Asymptotic Analysis",
+              content:
+                "Follow the complete Striver A2Z DSA video playlist embedded above.\n\nTopics covered: Big-O, Omega, Theta bounds, recursion trees, sliding window, two pointers, binary search on answers, and binary trees.",
+              useVideo: true,
+              durationMinutes: 50
+            },
+            {
+              title: "Stacks, Queues, Heaps & Tries",
+              content:
+                "Monotonic stack patterns, priority queues, min/max heapify complexity, and prefix-tree insertion and search.",
+              useVideo: false,
+              durationMinutes: 35
+            }
+          ]
+        },
+        {
+          title: "Module 2: Graphs & Dynamic Programming",
+          lessons: [
+            {
+              title: "BFS, DFS, Topological Sort & Shortest Paths",
+              content:
+                "Cycle detection in directed/undirected graphs, Kahn's algorithm, Dijkstra's algorithm, Bellman-Ford, and Disjoint Set Union (DSU).",
+              useVideo: false,
+              durationMinutes: 45
+            },
+            {
+              title: "Memoization & Tabulation in Dynamic Programming",
+              content:
+                "1D/2D DP state transitions, 0/1 Knapsack, Longest Common Subsequence, and space optimization.",
+              useVideo: false,
+              durationMinutes: 45
+            }
+          ]
+        }
+      ],
+      assignmentTitle: "Graph Shortest Path & DP Optimization Report",
+      assignmentDesc:
+        "Implement Dijkstra's algorithm with a min-heap and convert a top-down memoized DP solution into a space-optimized bottom-up solution.",
+      quizTitle: "DSA Foundations Quiz",
+      quizQuestion: {
+        prompt: "What is the worst-case time complexity of Binary Search on a sorted array of size n?",
+        options: [
+          { text: "O(n)", isCorrect: false },
+          { text: "O(log n)", isCorrect: true },
+          { text: "O(n log n)", isCorrect: false }
+        ]
+      }
+    }
+  ];
+
+  for (const spec of playlistCourses) {
+    const existing = await prisma.course.findUnique({ where: { slug: spec.slug } });
+    if (existing) {
+      continue;
+    }
+
+    const course = await prisma.course.create({
+      data: {
+        title: spec.title,
+        slug: spec.slug,
+        description: spec.description,
+        category: spec.category,
+        difficultyLevel: spec.difficultyLevel,
+        status: CourseStatus.PUBLISHED,
+        publishedAt: new Date(),
+        instructorId: spec.instructorId
+      }
+    });
+
+    for (let mIdx = 0; mIdx < spec.modules.length; mIdx++) {
+      const mSpec = spec.modules[mIdx]!;
+      const mod = await prisma.module.create({
+        data: {
+          courseId: course.id,
+          title: mSpec.title,
+          description: `${spec.title} — ${mSpec.title}`,
+          position: mIdx + 1
+        }
+      });
+
+      for (let lIdx = 0; lIdx < mSpec.lessons.length; lIdx++) {
+        const lSpec = mSpec.lessons[lIdx]!;
+        await prisma.lesson.create({
+          data: {
+            moduleId: mod.id,
+            title: lSpec.title,
+            content: lSpec.useVideo
+              ? `${lSpec.content}\n\nPlaylist URL: ${spec.playlistUrl}`
+              : lSpec.content,
+            videoUrl: lSpec.useVideo ? spec.embedUrl : null,
+            durationMinutes: lSpec.durationMinutes,
+            position: lIdx + 1,
+            isPublished: true
+          }
+        });
+      }
+    }
+
+    await prisma.assignment.create({
+      data: {
+        courseId: course.id,
+        title: spec.assignmentTitle,
+        description: spec.assignmentDesc,
+        dueDate: new Date(Date.now() + 14 * 24 * 3600 * 1000),
+        maxScore: 100,
+        allowResubmission: true,
+        maxResubmissions: 2,
+        allowLateSubmission: true,
+        isPublished: true
+      }
+    });
+
+    const quiz = await prisma.quiz.create({
+      data: {
+        courseId: course.id,
+        title: spec.quizTitle,
+        description: `Verify your core understanding of ${spec.title}.`,
+        timeLimitMinutes: 20,
+        passingScore: 1,
+        maxAttempts: 3,
+        isPublished: true
+      }
+    });
+
+    await prisma.question.create({
+      data: {
+        quizId: quiz.id,
+        prompt: spec.quizQuestion.prompt,
+        type: QuestionType.MULTIPLE_CHOICE,
+        points: 1,
+        position: 1,
+        options: {
+          create: spec.quizQuestion.options.map((o, idx) => ({
+            text: o.text,
+            isCorrect: o.isCorrect,
+            position: idx + 1
+          }))
+        }
+      }
+    });
+  }
+}
+
 async function main() {
   const existingAdmin = await prisma.user.findUnique({
     where: { email: "admin@phronesis.edu" }
   });
   if (existingAdmin) {
-    console.log("Database already seeded. Skipping duplicate seed.");
+    await ensurePlaylistCourses();
+    console.log("Database already seeded. Ensured playlist courses are present.");
     return;
   }
 
@@ -435,7 +734,8 @@ async function main() {
     }
   }
 
-  console.log(`Seed complete: 1 admin (${admin.email}), ${instructors.length} instructors, ${students.length} students, ${courses.length} courses.`);
+  await ensurePlaylistCourses();
+  console.log(`Seed complete: 1 admin (${admin.email}), ${instructors.length} instructors, ${students.length} students, ${courses.length} + playlist courses.`);
 }
 
 main()

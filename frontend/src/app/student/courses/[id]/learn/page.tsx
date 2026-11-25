@@ -29,6 +29,36 @@ import {
 
 type ActiveTab = "lessons" | "assignments" | "quizzes" | "materials";
 
+function toEmbedVideoUrl(rawUrl: string): string {
+  try {
+    const parsed = new URL(rawUrl);
+    if (parsed.hostname.includes("youtube.com")) {
+      if (parsed.pathname.startsWith("/embed/")) {
+        return rawUrl;
+      }
+      const listId = parsed.searchParams.get("list");
+      const videoId = parsed.searchParams.get("v");
+      if (parsed.pathname === "/playlist" && listId) {
+        return `https://www.youtube.com/embed/videoseries?list=${encodeURIComponent(listId)}`;
+      }
+      if (videoId) {
+        return listId
+          ? `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?list=${encodeURIComponent(listId)}`
+          : `https://www.youtube.com/embed/${encodeURIComponent(videoId)}`;
+      }
+    }
+    if (parsed.hostname === "youtu.be") {
+      const videoId = parsed.pathname.replace(/^\//, "");
+      if (videoId) {
+        return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}`;
+      }
+    }
+  } catch {
+    return rawUrl;
+  }
+  return rawUrl;
+}
+
 interface QuizResultData {
   attempt: QuizAttempt;
   quiz: { id: string; title: string; passingScore: number };
@@ -431,13 +461,24 @@ export default function StudentCourseLearnPage() {
                 </div>
 
                 {currentLesson.videoUrl && (
-                  <div className="aspect-video w-full overflow-hidden border-2 border-[#111827] bg-slate-900">
-                    <iframe
-                      src={currentLesson.videoUrl}
-                      title={currentLesson.title}
-                      className="h-full w-full"
-                      allowFullScreen
-                    />
+                  <div className="space-y-2">
+                    <div className="aspect-video w-full overflow-hidden border-2 border-[#111827] bg-slate-900">
+                      <iframe
+                        src={toEmbedVideoUrl(currentLesson.videoUrl)}
+                        title={currentLesson.title}
+                        className="h-full w-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <a
+                      href={currentLesson.videoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-block font-mono text-xs font-bold text-[#111827] underline"
+                    >
+                      Open video / playlist in new tab →
+                    </a>
                   </div>
                 )}
 
