@@ -1,15 +1,13 @@
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect } from "vitest";
 import request from "supertest";
+import { ensureTestDatabase } from "./helpers/db";
 
-beforeAll(() => {
-  process.env.DATABASE_URL =
-    process.env.DATABASE_URL || "postgresql://phronesis:phronesis_dev_password@localhost:5436/phronesis_test";
-  process.env.SESSION_SECRET = process.env.SESSION_SECRET || "test-session-secret-at-least-32-chars";
-});
+ensureTestDatabase();
+
+import { createApp } from "../src/app";
 
 describe("Health endpoint", () => {
   it("returns 200 ok", async () => {
-    const { createApp } = await import("../src/app");
     const app = createApp();
     const res = await request(app).get("/api/v1/health");
     expect(res.status).toBe(200);
