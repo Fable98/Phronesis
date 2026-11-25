@@ -7,6 +7,7 @@ import { requireCsrf } from "./middleware/csrf";
 import { errorHandler } from "./middleware/errorHandler";
 import { apiRateLimiter } from "./middleware/rateLimit";
 import authRoutes from "./modules/auth/auth.routes";
+import usersRoutes from "./modules/users/users.routes";
 import { NotFoundError } from "./utils/errors";
 
 export function createApp() {
@@ -29,6 +30,7 @@ export function createApp() {
   });
 
   app.use("/api/v1/auth", authRoutes);
+  app.use("/api/v1/users", usersRoutes);
 
   app.use((_req, _res, next) => {
     next(new NotFoundError("Endpoint not found"));
