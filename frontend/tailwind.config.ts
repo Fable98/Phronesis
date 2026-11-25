@@ -9,14 +9,34 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        canvas: "#F5F3EC",
+        mint: {
+          DEFAULT: "#A9D8B8",
+          light: "#C9E8D3",
+          dark: "#85C49A"
+        },
+        mustard: {
+          DEFAULT: "#F8CE46",
+          light: "#FBE07D"
+        },
+        lilac: {
+          DEFAULT: "#F0B7F3",
+          light: "#F7D5F9"
+        },
+        ink: "#111827",
         brand: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          500: "#3b82f6",
-          600: "#2563eb",
-          700: "#1d4ed8",
-          900: "#1e3a8a"
+          50: "#EEF8F1",
+          100: "#C9E8D3",
+          500: "#111827",
+          600: "#111827",
+          700: "#000000",
+          900: "#111827"
         }
+      },
+      boxShadow: {
+        brutal: "4px 4px 0px #111827",
+        "brutal-sm": "3px 3px 0px #111827",
+        "brutal-lg": "6px 6px 0px #111827"
       }
     }
   },

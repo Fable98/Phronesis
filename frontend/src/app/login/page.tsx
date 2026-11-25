@@ -45,18 +45,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#F5F3EC]">
       <Navbar />
       <div className="mx-auto max-w-md px-4 py-12">
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-          <h1 className="text-2xl font-bold text-slate-900">Sign in to Phronesis</h1>
-          <p className="mt-1 text-sm text-slate-600">
+        <div className="nb-card p-8">
+          <div className="inline-block border-2 border-[#111827] bg-[#F8CE46] px-2.5 py-0.5 font-mono text-xs font-bold uppercase">
+            Member Access
+          </div>
+          <h1 className="mt-3 nb-heading text-2xl">Sign in to Phronesis</h1>
+          <p className="mt-1 text-sm text-slate-700">
             Access your courses, assignments, quizzes, and analytics.
           </p>
 
           {serverError && (
             <div
-              className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+              className="mt-4 border-2 border-[#111827] bg-red-100 px-3 py-2 text-sm font-bold text-[#111827]"
               role="alert"
             >
               {serverError}
@@ -65,7 +68,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4" noValidate>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+              <label htmlFor="email" className="block font-mono text-xs font-bold uppercase text-[#111827]">
                 Email address
               </label>
               <input
@@ -73,15 +76,15 @@ export default function LoginPage() {
                 type="email"
                 autoComplete="email"
                 {...register("email")}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                className="nb-input mt-1"
               />
               {errors.email && (
-                <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
+                <p className="mt-1 text-xs font-bold text-red-700">{errors.email.message}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+              <label htmlFor="password" className="block font-mono text-xs font-bold uppercase text-[#111827]">
                 Password
               </label>
               <input
@@ -89,52 +92,52 @@ export default function LoginPage() {
                 type="password"
                 autoComplete="current-password"
                 {...register("password")}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                className="nb-input mt-1"
               />
               {errors.password && (
-                <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
+                <p className="mt-1 text-xs font-bold text-red-700">{errors.password.message}</p>
               )}
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+              className="nb-btn-primary w-full"
             >
               {isSubmitting ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
-          <p className="mt-5 text-center text-sm text-slate-600">
+          <p className="mt-5 text-center text-sm text-slate-700">
             New student?{" "}
-            <Link href="/register" className="font-semibold text-brand-600 hover:text-brand-700">
+            <Link href="/register" className="font-bold text-[#111827] underline">
               Create an account
             </Link>
           </p>
 
-          <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Seeded Credentials (Password: Phronesis123!)
+          <div className="mt-6 border-2 border-[#111827] bg-[#F0B7F3] p-4">
+            <p className="font-mono text-xs font-bold uppercase text-[#111827]">
+              Seeded Credentials (Phronesis123!)
             </p>
             <div className="mt-2 flex flex-wrap gap-2">
               <button
                 type="button"
                 onClick={() => fillDemo("student1@phronesis.edu")}
-                className="rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100"
+                className="border-2 border-[#111827] bg-white px-2.5 py-1 font-mono text-xs font-bold text-[#111827] hover:bg-[#F8CE46]"
               >
                 Student 1
               </button>
               <button
                 type="button"
                 onClick={() => fillDemo("marcus.chen@phronesis.edu")}
-                className="rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100"
+                className="border-2 border-[#111827] bg-white px-2.5 py-1 font-mono text-xs font-bold text-[#111827] hover:bg-[#F8CE46]"
               >
                 Instructor
               </button>
               <button
                 type="button"
                 onClick={() => fillDemo("admin@phronesis.edu")}
-                className="rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100"
+                className="border-2 border-[#111827] bg-white px-2.5 py-1 font-mono text-xs font-bold text-[#111827] hover:bg-[#F8CE46]"
               >
                 Admin
               </button>

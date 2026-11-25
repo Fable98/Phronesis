@@ -3,5 +3,39 @@
 @tailwind utilities;
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  @apply bg-[#F5F3EC] text-[#111827] antialiased;
+}
+
+@layer components {
+  .nb-card {
+    @apply border-2 border-[#111827] bg-white shadow-[4px_4px_0px_#111827];
+  }
+
+  .nb-card-mustard {
+    @apply border-2 border-[#111827] bg-[#F8CE46] shadow-[4px_4px_0px_#111827];
+  }
+
+  .nb-card-lilac {
+    @apply border-2 border-[#111827] bg-[#F0B7F3] shadow-[4px_4px_0px_#111827];
+  }
+
+  .nb-card-mint {
+    @apply border-2 border-[#111827] bg-[#A9D8B8] shadow-[4px_4px_0px_#111827];
+  }
+
+  .nb-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-[#111827] bg-[#111827] px-4 py-2 text-sm font-bold text-white shadow-[3px_3px_0px_#111827] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0 active:translate-y-0 disabled:opacity-50;
+  }
+
+  .nb-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-[#111827] bg-white px-4 py-2 text-sm font-bold text-[#111827] shadow-[3px_3px_0px_#111827] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-[#F8CE46] active:translate-x-0 active:translate-y-0 disabled:opacity-50;
+  }
+
+  .nb-input {
+    @apply w-full border-2 border-[#111827] bg-white px-3 py-2 text-sm text-[#111827] placeholder:text-slate-500 focus:bg-[#FFFDF5] focus:outline-none;
+  }
+
+  .nb-heading {
+    @apply font-mono font-bold tracking-tight text-[#111827];
+  }
 }

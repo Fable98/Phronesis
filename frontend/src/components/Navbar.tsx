@@ -23,25 +23,30 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b-2 border-[#111827] bg-[#A9D8B8]">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-6">
           <Link
             href="/"
-            className="flex items-center gap-2 text-lg font-bold tracking-tight text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-md px-1"
+            className="flex items-center gap-2.5 text-lg font-mono font-bold tracking-tight text-[#111827]"
           >
-            <GraduationCap className="h-6 w-6 text-brand-600" />
-            <span>Phronesis</span>
+            <span className="flex h-9 w-9 items-center justify-center border-2 border-[#111827] bg-white shadow-[2px_2px_0px_#111827]">
+              <GraduationCap className="h-5 w-5 text-[#111827]" />
+            </span>
+            <span>PHRONESIS</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-5 text-sm font-medium text-slate-600">
-            <Link href="/courses" className="hover:text-slate-900 transition-colors flex items-center gap-1.5">
+          <nav className="hidden md:flex items-center gap-2 text-sm font-bold text-[#111827]">
+            <Link
+              href="/courses"
+              className="flex items-center gap-1.5 border-2 border-transparent px-3 py-1.5 hover:border-[#111827] hover:bg-white transition-colors"
+            >
               <BookOpen className="h-4 w-4" />
               Course Catalog
             </Link>
             {user && (
               <Link
                 href={roleHomePath(user.role)}
-                className="hover:text-slate-900 transition-colors"
+                className="border-2 border-transparent px-3 py-1.5 hover:border-[#111827] hover:bg-white transition-colors"
               >
                 Dashboard
               </Link>
@@ -52,39 +57,27 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           {user ? (
             <>
-              <span className="text-sm text-slate-600">
-                <strong className="font-semibold text-slate-900">{user.name}</strong>{" "}
-                <span className="ml-1 rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">
-                  {user.role}
-                </span>
+              <span className="border-2 border-[#111827] bg-[#F5F3EC] px-3 py-1 text-xs font-bold text-[#111827]">
+                {user.name} · {user.role}
               </span>
-              <Link
-                href={roleHomePath(user.role)}
-                className="rounded-lg bg-brand-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
-              >
+              <Link href={roleHomePath(user.role)} className="nb-btn-primary text-xs">
                 Workspace
               </Link>
               <button
                 type="button"
                 onClick={handleLogout}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="nb-btn-secondary text-xs"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-3.5 w-3.5" />
                 Sign out
               </button>
             </>
           ) : (
             <>
-              <Link
-                href="/login"
-                className="rounded-lg px-3.5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100"
-              >
+              <Link href="/login" className="nb-btn-secondary text-xs">
                 Sign in
               </Link>
-              <Link
-                href="/register"
-                className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
-              >
+              <Link href="/register" className="nb-btn-primary text-xs">
                 Get started
               </Link>
             </>
@@ -93,7 +86,7 @@ export function Navbar() {
 
         <button
           type="button"
-          className="md:hidden rounded-lg p-2 text-slate-600 hover:bg-slate-100"
+          className="md:hidden border-2 border-[#111827] bg-white p-2 text-[#111827] shadow-[2px_2px_0px_#111827]"
           aria-label="Toggle navigation menu"
           onClick={() => setOpen((v) => !v)}
         >
@@ -102,11 +95,11 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t border-slate-200 bg-white px-4 py-4 md:hidden space-y-3">
+        <div className="border-t-2 border-[#111827] bg-[#F5F3EC] px-4 py-4 md:hidden space-y-3">
           <Link
             href="/courses"
             onClick={() => setOpen(false)}
-            className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+            className="block border-2 border-[#111827] bg-white px-3 py-2 text-sm font-bold text-[#111827]"
           >
             Course Catalog
           </Link>
@@ -115,7 +108,7 @@ export function Navbar() {
               <Link
                 href={roleHomePath(user.role)}
                 onClick={() => setOpen(false)}
-                className="block rounded-lg bg-brand-600 px-3 py-2 text-sm font-semibold text-white"
+                className="block border-2 border-[#111827] bg-[#111827] px-3 py-2 text-sm font-bold text-white"
               >
                 Go to {user.role} Workspace
               </Link>
@@ -125,7 +118,7 @@ export function Navbar() {
                   setOpen(false);
                   void handleLogout();
                 }}
-                className="w-full text-left rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700"
+                className="w-full text-left border-2 border-[#111827] bg-white px-3 py-2 text-sm font-bold text-[#111827]"
               >
                 Sign out ({user.name})
               </button>
@@ -135,14 +128,14 @@ export function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setOpen(false)}
-                className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-center text-sm font-semibold text-slate-700"
+                className="flex-1 border-2 border-[#111827] bg-white px-3 py-2 text-center text-sm font-bold text-[#111827]"
               >
                 Sign in
               </Link>
               <Link
                 href="/register"
                 onClick={() => setOpen(false)}
-                className="flex-1 rounded-lg bg-brand-600 px-3 py-2 text-center text-sm font-semibold text-white"
+                className="flex-1 border-2 border-[#111827] bg-[#111827] px-3 py-2 text-center text-sm font-bold text-white"
               >
                 Register
               </Link>

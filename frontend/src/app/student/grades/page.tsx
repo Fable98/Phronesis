@@ -35,14 +35,14 @@ export default function StudentGradesPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Grades & Quiz History</h1>
-        <p className="text-sm text-slate-600">
+        <h1 className="nb-heading text-3xl">Grades & Quiz History</h1>
+        <p className="text-sm text-slate-700">
           Review instructor feedback on assignments and your graded quiz attempts.
         </p>
       </div>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-bold text-slate-900">Assignment Submissions</h2>
+      <section className="nb-card p-6">
+        <h2 className="nb-heading text-lg">Assignment Submissions</h2>
         {submissions.length === 0 ? (
           <div className="mt-4">
             <EmptyState
@@ -53,7 +53,7 @@ export default function StudentGradesPage() {
         ) : (
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-200 text-xs uppercase text-slate-500">
+              <thead className="border-b-2 border-[#111827] font-mono text-xs uppercase text-[#111827]">
                 <tr>
                   <th className="py-2.5 pr-4">Course</th>
                   <th className="py-2.5 pr-4">Assignment</th>
@@ -63,23 +63,23 @@ export default function StudentGradesPage() {
                   <th className="py-2.5">Feedback</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#111827]/15">
                 {submissions.map((s) => (
                   <tr key={s.id}>
-                    <td className="py-3 pr-4 font-medium text-slate-900">
+                    <td className="py-3 pr-4 font-bold text-[#111827]">
                       {s.assignment?.course?.title ?? "—"}
                     </td>
-                    <td className="py-3 pr-4 text-slate-700">{s.assignment?.title ?? "—"}</td>
-                    <td className="py-3 pr-4 text-slate-600">
+                    <td className="py-3 pr-4 text-slate-800">{s.assignment?.title ?? "—"}</td>
+                    <td className="py-3 pr-4 font-mono text-xs text-slate-700">
                       #{s.attemptNumber} {s.isLate ? "(Late)" : ""}
                     </td>
                     <td className="py-3 pr-4">
                       <StatusBadge value={s.status} />
                     </td>
-                    <td className="py-3 pr-4 font-semibold text-slate-900">
+                    <td className="py-3 pr-4 font-mono font-bold text-[#111827]">
                       {s.score !== null ? `${s.score} / ${s.assignment?.maxScore ?? 100}` : "Pending"}
                     </td>
-                    <td className="py-3 text-slate-600">{s.feedback ?? "—"}</td>
+                    <td className="py-3 text-slate-700">{s.feedback ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -88,8 +88,8 @@ export default function StudentGradesPage() {
         )}
       </section>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-bold text-slate-900">Quiz Attempts</h2>
+      <section className="nb-card p-6">
+        <h2 className="nb-heading text-lg">Quiz Attempts</h2>
         {attempts.length === 0 ? (
           <div className="mt-4">
             <EmptyState
@@ -100,7 +100,7 @@ export default function StudentGradesPage() {
         ) : (
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-200 text-xs uppercase text-slate-500">
+              <thead className="border-b-2 border-[#111827] font-mono text-xs uppercase text-[#111827]">
                 <tr>
                   <th className="py-2.5 pr-4">Course</th>
                   <th className="py-2.5 pr-4">Quiz</th>
@@ -109,26 +109,30 @@ export default function StudentGradesPage() {
                   <th className="py-2.5">Outcome</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#111827]/15">
                 {attempts.map((a) => (
                   <tr key={a.id}>
-                    <td className="py-3 pr-4 font-medium text-slate-900">
+                    <td className="py-3 pr-4 font-bold text-[#111827]">
                       {a.quiz?.course?.title ?? "—"}
                     </td>
-                    <td className="py-3 pr-4 text-slate-700">{a.quiz?.title ?? "—"}</td>
+                    <td className="py-3 pr-4 text-slate-800">{a.quiz?.title ?? "—"}</td>
                     <td className="py-3 pr-4">
                       <StatusBadge value={a.status} />
                     </td>
-                    <td className="py-3 pr-4 font-semibold text-slate-900">
+                    <td className="py-3 pr-4 font-mono font-bold text-[#111827]">
                       {a.score !== null ? `${a.score} / ${a.scoreMax}` : "—"}
                     </td>
-                    <td className="py-3">
+                    <td className="py-3 font-mono text-xs font-bold">
                       {a.passed === null ? (
                         "—"
                       ) : a.passed ? (
-                        <span className="font-semibold text-emerald-700">Passed</span>
+                        <span className="border-2 border-[#111827] bg-[#A9D8B8] px-2 py-0.5">
+                          PASSED
+                        </span>
                       ) : (
-                        <span className="font-semibold text-red-700">Not Passed</span>
+                        <span className="border-2 border-[#111827] bg-red-200 px-2 py-0.5">
+                          NOT PASSED
+                        </span>
                       )}
                     </td>
                   </tr>

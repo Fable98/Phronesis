@@ -50,7 +50,7 @@ test("Full LMS journey: register, browse, enroll, lesson, assignment, quiz, inst
   await expect(page.getByText("Quiz in Progress")).toBeVisible();
 
   // Select first option for each radio group
-  const questionGroups = page.locator("div.rounded-lg.border.border-slate-200.p-4");
+  const questionGroups = page.locator('[data-testid="quiz-question"]');
   const count = await questionGroups.count();
   for (let i = 0; i < count; i++) {
     await questionGroups.nth(i).locator('input[type="radio"]').first().check();
@@ -71,7 +71,7 @@ test("Full LMS journey: register, browse, enroll, lesson, assignment, quiz, inst
   await expect(page).toHaveURL(/\/instructor\/submissions/);
 
   const targetCard = page
-    .locator("div.rounded-xl.border.border-slate-200.bg-white.p-6")
+    .locator('[data-testid="submission-card"]')
     .filter({ hasText: uniqueEmail })
     .first();
   await expect(targetCard).toBeVisible();

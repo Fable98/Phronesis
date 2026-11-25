@@ -29,8 +29,8 @@ export default function AdminEnrollmentsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Platform Enrollments</h1>
-          <p className="text-sm text-slate-600">
+          <h1 className="nb-heading text-3xl">Platform Enrollments</h1>
+          <p className="text-sm text-slate-700">
             Monitor student progress and enrollment statuses across all courses.
           </p>
         </div>
@@ -41,7 +41,7 @@ export default function AdminEnrollmentsPage() {
             setStatusFilter(e.target.value);
             setPage(1);
           }}
-          className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+          className="nb-input w-auto"
         >
           <option value="">All Statuses</option>
           <option value="ACTIVE">ACTIVE</option>
@@ -56,9 +56,9 @@ export default function AdminEnrollmentsPage() {
           description="No enrollments match the selected filter."
         />
       ) : (
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm overflow-x-auto">
+        <div className="nb-card p-4 overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-xs uppercase text-slate-500">
+            <thead className="border-b-2 border-[#111827] font-mono text-xs uppercase text-[#111827]">
               <tr>
                 <th className="py-2.5 pr-4">Student</th>
                 <th className="py-2.5 pr-4">Course</th>
@@ -67,21 +67,21 @@ export default function AdminEnrollmentsPage() {
                 <th className="py-2.5">Last Accessed</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-[#111827]/15">
               {enrollments.map((e) => (
                 <tr key={e.id}>
                   <td className="py-3 pr-4">
-                    <p className="font-medium text-slate-900">{e.student?.name}</p>
-                    <p className="text-xs text-slate-500">{e.student?.email}</p>
+                    <p className="font-bold text-[#111827]">{e.student?.name}</p>
+                    <p className="font-mono text-xs text-slate-600">{e.student?.email}</p>
                   </td>
-                  <td className="py-3 pr-4 font-medium text-slate-800">{e.course?.title}</td>
+                  <td className="py-3 pr-4 font-bold text-[#111827]">{e.course?.title}</td>
                   <td className="py-3 pr-4">
                     <StatusBadge value={e.status} />
                   </td>
-                  <td className="py-3 pr-4 font-semibold text-slate-900">
+                  <td className="py-3 pr-4 font-mono font-bold text-[#111827]">
                     {e.progress?.percentage ?? 0}%
                   </td>
-                  <td className="py-3 text-xs text-slate-500">
+                  <td className="py-3 font-mono text-xs text-slate-600">
                     {new Date(e.lastAccessedAt).toLocaleString()}
                   </td>
                 </tr>
@@ -90,7 +90,7 @@ export default function AdminEnrollmentsPage() {
           </table>
 
           {meta && meta.totalPages > 1 && (
-            <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-600">
+            <div className="mt-4 flex items-center justify-between border-t-2 border-[#111827]/15 pt-3 font-mono text-xs font-bold text-[#111827]">
               <span>
                 Page {meta.page} of {meta.totalPages} ({meta.total} enrollments)
               </span>
@@ -99,7 +99,7 @@ export default function AdminEnrollmentsPage() {
                   type="button"
                   disabled={page <= 1}
                   onClick={() => setPage((p) => p - 1)}
-                  className="rounded border border-slate-300 px-3 py-1 disabled:opacity-50"
+                  className="nb-btn-secondary px-3 py-1 text-xs"
                 >
                   Prev
                 </button>
@@ -107,7 +107,7 @@ export default function AdminEnrollmentsPage() {
                   type="button"
                   disabled={page >= meta.totalPages}
                   onClick={() => setPage((p) => p + 1)}
-                  className="rounded border border-slate-300 px-3 py-1 disabled:opacity-50"
+                  className="nb-btn-secondary px-3 py-1 text-xs"
                 >
                   Next
                 </button>

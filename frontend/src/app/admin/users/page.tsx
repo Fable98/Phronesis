@@ -96,15 +96,15 @@ export default function AdminUsersPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">User & Role Administration</h1>
-          <p className="text-sm text-slate-600">
+          <h1 className="nb-heading text-3xl">User & Role Administration</h1>
+          <p className="text-sm text-slate-700">
             Create instructor/admin accounts, manage roles, and toggle active status.
           </p>
         </div>
         <button
           type="button"
           onClick={() => setShowCreate((v) => !v)}
-          className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+          className="nb-btn-primary text-xs"
         >
           <UserPlus className="h-4 w-4" />
           {showCreate ? "Close Form" : "Create User"}
@@ -113,72 +113,65 @@ export default function AdminUsersPage() {
 
       {banner && <SuccessBanner message={banner} />}
       {errorMsg && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        <div
+          className="border-2 border-[#111827] bg-red-100 px-4 py-3 text-sm font-bold text-[#111827]"
+          role="alert"
+        >
           {errorMsg}
         </div>
       )}
 
       {showCreate && (
-        <form
-          onSubmit={handleSubmit(onCreateUser)}
-          className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4"
-        >
-          <h2 className="text-base font-bold text-slate-900">Create New User</h2>
+        <form onSubmit={handleSubmit(onCreateUser)} className="nb-card p-6 space-y-4">
+          <h2 className="nb-heading text-base">Create New User</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-medium text-slate-700">Name</label>
-              <input
-                type="text"
-                {...register("name")}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-              />
-              {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>}
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-slate-700">Email</label>
-              <input
-                type="email"
-                {...register("email")}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-              />
-              {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-slate-700">Password</label>
-              <input
-                type="password"
-                {...register("password")}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-              />
-              {errors.password && (
-                <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
+              <label className="block font-mono text-xs font-bold uppercase text-[#111827]">
+                Name
+              </label>
+              <input type="text" {...register("name")} className="nb-input mt-1" />
+              {errors.name && (
+                <p className="mt-1 text-xs font-bold text-red-700">{errors.name.message}</p>
               )}
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-700">Role</label>
-              <select
-                {...register("role")}
-                className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              >
+              <label className="block font-mono text-xs font-bold uppercase text-[#111827]">
+                Email
+              </label>
+              <input type="email" {...register("email")} className="nb-input mt-1" />
+              {errors.email && (
+                <p className="mt-1 text-xs font-bold text-red-700">{errors.email.message}</p>
+              )}
+            </div>
+            <div>
+              <label className="block font-mono text-xs font-bold uppercase text-[#111827]">
+                Password
+              </label>
+              <input type="password" {...register("password")} className="nb-input mt-1" />
+              {errors.password && (
+                <p className="mt-1 text-xs font-bold text-red-700">{errors.password.message}</p>
+              )}
+            </div>
+            <div>
+              <label className="block font-mono text-xs font-bold uppercase text-[#111827]">
+                Role
+              </label>
+              <select {...register("role")} className="nb-input mt-1">
                 <option value="STUDENT">STUDENT</option>
                 <option value="INSTRUCTOR">INSTRUCTOR</option>
                 <option value="ADMIN">ADMIN</option>
               </select>
             </div>
           </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="rounded-lg bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700"
-          >
+          <button type="submit" disabled={isSubmitting} className="nb-btn-primary text-xs">
             {isSubmitting ? "Creating..." : "Create Account"}
           </button>
         </form>
       )}
 
-      <div className="flex flex-wrap gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="nb-card flex flex-wrap gap-3 p-4">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-[#111827]" />
           <input
             type="text"
             value={search}
@@ -187,7 +180,7 @@ export default function AdminUsersPage() {
               setPage(1);
             }}
             placeholder="Search name or email..."
-            className="w-full rounded-lg border border-slate-300 py-2 pl-9 pr-3 text-sm"
+            className="nb-input pl-9"
           />
         </div>
         <select
@@ -196,7 +189,7 @@ export default function AdminUsersPage() {
             setRoleFilter(e.target.value);
             setPage(1);
           }}
-          className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+          className="nb-input w-auto"
         >
           <option value="">All Roles</option>
           <option value="ADMIN">ADMIN</option>
@@ -210,9 +203,9 @@ export default function AdminUsersPage() {
       ) : usersQuery.isError ? (
         <ErrorState message="Failed to load users" />
       ) : (
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm overflow-x-auto">
+        <div className="nb-card p-4 overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-xs uppercase text-slate-500">
+            <thead className="border-b-2 border-[#111827] font-mono text-xs uppercase text-[#111827]">
               <tr>
                 <th className="py-2.5 pr-4">Name</th>
                 <th className="py-2.5 pr-4">Email</th>
@@ -221,11 +214,11 @@ export default function AdminUsersPage() {
                 <th className="py-2.5">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-[#111827]/15">
               {users.map((u) => (
                 <tr key={u.id}>
-                  <td className="py-3 pr-4 font-medium text-slate-900">{u.name}</td>
-                  <td className="py-3 pr-4 text-slate-600">{u.email}</td>
+                  <td className="py-3 pr-4 font-bold text-[#111827]">{u.name}</td>
+                  <td className="py-3 pr-4 text-slate-700">{u.email}</td>
                   <td className="py-3 pr-4">
                     <select
                       aria-label={`Role for ${u.name}`}
@@ -233,7 +226,7 @@ export default function AdminUsersPage() {
                       onChange={(e) =>
                         roleMutation.mutate({ id: u.id, role: e.target.value as Role })
                       }
-                      className="rounded border border-slate-300 bg-white px-2 py-1 text-xs font-medium"
+                      className="border-2 border-[#111827] bg-white px-2 py-1 font-mono text-xs font-bold"
                     >
                       <option value="STUDENT">STUDENT</option>
                       <option value="INSTRUCTOR">INSTRUCTOR</option>
@@ -249,7 +242,7 @@ export default function AdminUsersPage() {
                       onClick={() =>
                         toggleActiveMutation.mutate({ id: u.id, isActive: !u.isActive })
                       }
-                      className="rounded border border-slate-300 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                      className="border-2 border-[#111827] bg-white px-2.5 py-1 font-mono text-xs font-bold hover:bg-[#F8CE46]"
                     >
                       {u.isActive ? "Deactivate" : "Activate"}
                     </button>
@@ -257,7 +250,7 @@ export default function AdminUsersPage() {
                       type="button"
                       aria-label={`Delete ${u.name}`}
                       onClick={() => deleteMutation.mutate(u.id)}
-                      className="rounded border border-red-200 p-1.5 text-red-600 hover:bg-red-50"
+                      className="border-2 border-[#111827] bg-red-100 p-1.5 hover:bg-red-200"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -268,7 +261,7 @@ export default function AdminUsersPage() {
           </table>
 
           {meta && meta.totalPages > 1 && (
-            <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-600">
+            <div className="mt-4 flex items-center justify-between border-t-2 border-[#111827]/15 pt-3 font-mono text-xs font-bold text-[#111827]">
               <span>
                 Page {meta.page} of {meta.totalPages} ({meta.total} users)
               </span>
@@ -277,7 +270,7 @@ export default function AdminUsersPage() {
                   type="button"
                   disabled={page <= 1}
                   onClick={() => setPage((p) => p - 1)}
-                  className="rounded border border-slate-300 px-3 py-1 disabled:opacity-50"
+                  className="nb-btn-secondary px-3 py-1 text-xs"
                 >
                   Prev
                 </button>
@@ -285,7 +278,7 @@ export default function AdminUsersPage() {
                   type="button"
                   disabled={page >= meta.totalPages}
                   onClick={() => setPage((p) => p + 1)}
-                  className="rounded border border-slate-300 px-3 py-1 disabled:opacity-50"
+                  className="nb-btn-secondary px-3 py-1 text-xs"
                 >
                   Next
                 </button>

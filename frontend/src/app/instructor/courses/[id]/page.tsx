@@ -40,7 +40,6 @@ export default function InstructorCourseEditorPage() {
   const [banner, setBanner] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Module / Lesson forms
   const [newModTitle, setNewModTitle] = useState("");
   const [lessonForm, setLessonForm] = useState<{
     moduleId: string;
@@ -50,11 +49,9 @@ export default function InstructorCourseEditorPage() {
     durationMinutes: number;
   } | null>(null);
 
-  // Material form
   const [matTitle, setMatTitle] = useState("");
   const [matFile, setMatFile] = useState<File | null>(null);
 
-  // Assignment form
   const [assignTitle, setAssignTitle] = useState("");
   const [assignDesc, setAssignDesc] = useState("");
   const [assignMaxScore, setAssignMaxScore] = useState(100);
@@ -62,7 +59,6 @@ export default function InstructorCourseEditorPage() {
   const [assignMaxResub, setAssignMaxResub] = useState(2);
   const [assignAllowLate, setAssignAllowLate] = useState(true);
 
-  // Quiz & Question form
   const [quizTitle, setQuizTitle] = useState("");
   const [quizLimit, setQuizLimit] = useState(20);
   const [quizPass, setQuizPass] = useState(1);
@@ -71,7 +67,6 @@ export default function InstructorCourseEditorPage() {
   const [opt2, setOpt2] = useState<Record<string, string>>({});
   const [correctIdx, setCorrectIdx] = useState<Record<string, number>>({});
 
-  // Settings form
   const [editTitle, setEditTitle] = useState("");
   const [editDesc, setEditDesc] = useState("");
   const [editCategory, setEditCategory] = useState("");
@@ -354,17 +349,19 @@ export default function InstructorCourseEditorPage() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="nb-card-mustard p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <StatusBadge value={course.status} />
               <StatusBadge value={course.difficultyLevel} />
-              <span className="text-xs font-medium text-slate-500">{course.category}</span>
+              <span className="border-2 border-[#111827] bg-white px-2 py-0.5 font-mono text-[11px] font-bold">
+                {course.category}
+              </span>
             </div>
-            <h1 className="mt-2 text-2xl font-bold text-slate-900">{course.title}</h1>
+            <h1 className="mt-3 nb-heading text-2xl">{course.title}</h1>
             {course.rejectionReason && (
-              <p className="mt-2 text-xs text-red-700">
+              <p className="mt-2 font-mono text-xs font-bold text-red-900">
                 Rejection reason: {course.rejectionReason}
               </p>
             )}
@@ -376,7 +373,7 @@ export default function InstructorCourseEditorPage() {
                 type="button"
                 disabled={submitForReviewMutation.isPending}
                 onClick={() => submitForReviewMutation.mutate()}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-brand-700"
+                className="nb-btn-primary text-xs"
               >
                 <Send className="h-3.5 w-3.5" />
                 Submit for Approval
@@ -387,7 +384,7 @@ export default function InstructorCourseEditorPage() {
                 type="button"
                 disabled={archiveMutation.isPending}
                 onClick={() => archiveMutation.mutate()}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                className="nb-btn-secondary text-xs"
               >
                 <Archive className="h-3.5 w-3.5" />
                 Archive
@@ -396,7 +393,7 @@ export default function InstructorCourseEditorPage() {
           </div>
         </div>
 
-        <div className="mt-5 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+        <div className="mt-5 flex flex-wrap gap-2 border-t-2 border-[#111827] pt-4">
           {(
             [
               { id: "curriculum", label: "Modules & Lessons", icon: BookOpen },
@@ -417,10 +414,10 @@ export default function InstructorCourseEditorPage() {
                   setBanner(null);
                   setErrorMsg(null);
                 }}
-                className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold ${
+                className={`inline-flex items-center gap-1.5 border-2 border-[#111827] px-3.5 py-2 font-mono text-xs font-bold ${
                   tab === t.id
-                    ? "bg-brand-600 text-white"
-                    : "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+                    ? "bg-[#111827] text-white"
+                    : "bg-white text-[#111827] hover:bg-[#F5F3EC]"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -433,26 +430,29 @@ export default function InstructorCourseEditorPage() {
 
       {banner && <SuccessBanner message={banner} />}
       {errorMsg && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        <div
+          className="border-2 border-[#111827] bg-red-100 px-4 py-3 text-sm font-bold text-[#111827]"
+          role="alert"
+        >
           {errorMsg}
         </div>
       )}
 
       {tab === "curriculum" && (
         <div className="space-y-6">
-          <div className="flex gap-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="nb-card flex flex-wrap gap-2 p-4">
             <input
               type="text"
               value={newModTitle}
               onChange={(e) => setNewModTitle(e.target.value)}
               placeholder="New module title..."
-              className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="nb-input flex-1"
             />
             <button
               type="button"
               disabled={!newModTitle.trim() || addModuleMutation.isPending}
               onClick={() => addModuleMutation.mutate()}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
+              className="nb-btn-primary text-xs"
             >
               <Plus className="h-4 w-4" />
               Add Module
@@ -460,9 +460,9 @@ export default function InstructorCourseEditorPage() {
           </div>
 
           {modules.map((mod, mIdx) => (
-            <div key={mod.id} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div key={mod.id} className="nb-card p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h2 className="text-base font-bold text-slate-900">
+                <h2 className="nb-heading text-base">
                   {mod.position}. {mod.title}
                 </h2>
                 <div className="flex items-center gap-1.5">
@@ -471,7 +471,7 @@ export default function InstructorCourseEditorPage() {
                     aria-label="Move module up"
                     disabled={mIdx === 0}
                     onClick={() => moveModule(mIdx, -1)}
-                    className="rounded border border-slate-300 p-1.5 text-slate-600 hover:bg-slate-50 disabled:opacity-40"
+                    className="border-2 border-[#111827] bg-white p-1.5 disabled:opacity-40 hover:bg-[#F8CE46]"
                   >
                     <ArrowUp className="h-3.5 w-3.5" />
                   </button>
@@ -480,7 +480,7 @@ export default function InstructorCourseEditorPage() {
                     aria-label="Move module down"
                     disabled={mIdx === modules.length - 1}
                     onClick={() => moveModule(mIdx, 1)}
-                    className="rounded border border-slate-300 p-1.5 text-slate-600 hover:bg-slate-50 disabled:opacity-40"
+                    className="border-2 border-[#111827] bg-white p-1.5 disabled:opacity-40 hover:bg-[#F8CE46]"
                   >
                     <ArrowDown className="h-3.5 w-3.5" />
                   </button>
@@ -495,7 +495,7 @@ export default function InstructorCourseEditorPage() {
                         durationMinutes: 15
                       })
                     }
-                    className="rounded-lg border border-brand-200 bg-brand-50 px-2.5 py-1.5 text-xs font-semibold text-brand-700 hover:bg-brand-100"
+                    className="border-2 border-[#111827] bg-[#A9D8B8] px-2.5 py-1.5 font-mono text-xs font-bold text-[#111827]"
                   >
                     + Add Lesson
                   </button>
@@ -503,7 +503,7 @@ export default function InstructorCourseEditorPage() {
                     type="button"
                     aria-label="Delete module"
                     onClick={() => deleteModuleMutation.mutate(mod.id)}
-                    className="rounded border border-red-200 p-1.5 text-red-600 hover:bg-red-50"
+                    className="border-2 border-[#111827] bg-red-100 p-1.5 text-[#111827] hover:bg-red-200"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -511,20 +511,20 @@ export default function InstructorCourseEditorPage() {
               </div>
 
               {lessonForm?.moduleId === mod.id && (
-                <div className="mt-4 space-y-3 rounded-lg border border-brand-200 bg-brand-50/40 p-4">
+                <div className="mt-4 space-y-3 border-2 border-[#111827] bg-[#F5F3EC] p-4">
                   <input
                     type="text"
                     placeholder="Lesson title"
                     value={lessonForm.title}
                     onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm"
+                    className="nb-input"
                   />
                   <textarea
                     rows={3}
                     placeholder="Lesson content"
                     value={lessonForm.content}
                     onChange={(e) => setLessonForm({ ...lessonForm, content: e.target.value })}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm"
+                    className="nb-input"
                   />
                   <div className="grid gap-3 sm:grid-cols-2">
                     <input
@@ -532,7 +532,7 @@ export default function InstructorCourseEditorPage() {
                       placeholder="Video embed URL (optional)"
                       value={lessonForm.videoUrl}
                       onChange={(e) => setLessonForm({ ...lessonForm, videoUrl: e.target.value })}
-                      className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm"
+                      className="nb-input"
                     />
                     <input
                       type="number"
@@ -544,7 +544,7 @@ export default function InstructorCourseEditorPage() {
                           durationMinutes: Number(e.target.value) || 10
                         })
                       }
-                      className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm"
+                      className="nb-input"
                     />
                   </div>
                   <div className="flex gap-2">
@@ -552,14 +552,14 @@ export default function InstructorCourseEditorPage() {
                       type="button"
                       disabled={addLessonMutation.isPending}
                       onClick={() => addLessonMutation.mutate()}
-                      className="rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-semibold text-white"
+                      className="nb-btn-primary text-xs"
                     >
                       Save Lesson
                     </button>
                     <button
                       type="button"
                       onClick={() => setLessonForm(null)}
-                      className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700"
+                      className="nb-btn-secondary text-xs"
                     >
                       Cancel
                     </button>
@@ -567,18 +567,18 @@ export default function InstructorCourseEditorPage() {
                 </div>
               )}
 
-              <ul className="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
+              <ul className="mt-3 divide-y-2 divide-[#111827]/15 border-2 border-[#111827] bg-[#F5F3EC]">
                 {mod.lessons.length === 0 ? (
-                  <li className="px-4 py-3 text-xs text-slate-400">No lessons yet.</li>
+                  <li className="px-4 py-3 text-xs text-slate-600">No lessons yet.</li>
                 ) : (
                   mod.lessons.map((lesson, lIdx) => (
                     <li
                       key={lesson.id}
                       className="flex items-center justify-between gap-2 px-4 py-2.5 text-sm"
                     >
-                      <span className="font-medium text-slate-800">
+                      <span className="font-bold text-[#111827]">
                         {lesson.position}. {lesson.title}{" "}
-                        <span className="text-xs text-slate-400">
+                        <span className="font-mono text-xs font-normal text-slate-600">
                           ({lesson.durationMinutes} min)
                         </span>
                       </span>
@@ -587,7 +587,7 @@ export default function InstructorCourseEditorPage() {
                           type="button"
                           disabled={lIdx === 0}
                           onClick={() => moveLesson(mod.id, mod.lessons, lIdx, -1)}
-                          className="rounded border border-slate-200 p-1 text-slate-500 disabled:opacity-40"
+                          className="border-2 border-[#111827] bg-white p-1 disabled:opacity-40"
                         >
                           <ArrowUp className="h-3 w-3" />
                         </button>
@@ -595,14 +595,14 @@ export default function InstructorCourseEditorPage() {
                           type="button"
                           disabled={lIdx === mod.lessons.length - 1}
                           onClick={() => moveLesson(mod.id, mod.lessons, lIdx, 1)}
-                          className="rounded border border-slate-200 p-1 text-slate-500 disabled:opacity-40"
+                          className="border-2 border-[#111827] bg-white p-1 disabled:opacity-40"
                         >
                           <ArrowDown className="h-3 w-3" />
                         </button>
                         <button
                           type="button"
                           onClick={() => deleteLessonMutation.mutate(lesson.id)}
-                          className="rounded border border-red-200 p-1 text-red-600"
+                          className="border-2 border-[#111827] bg-red-100 p-1"
                         >
                           <Trash2 className="h-3 w-3" />
                         </button>
@@ -617,17 +617,17 @@ export default function InstructorCourseEditorPage() {
       )}
 
       {tab === "materials" && (
-        <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-900">Upload Course Material</h2>
+        <div className="nb-card p-6 space-y-4">
+          <h2 className="nb-heading text-lg">Upload Course Material</h2>
           <div className="flex flex-wrap items-center gap-3">
             <input
               type="text"
               placeholder="Material title (e.g. Lecture Slides)"
               value={matTitle}
               onChange={(e) => setMatTitle(e.target.value)}
-              className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="nb-input flex-1"
             />
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700">
+            <label className="nb-btn-secondary cursor-pointer text-xs">
               <Upload className="h-3.5 w-3.5" />
               <span>{matFile?.name ?? "Choose PDF/PNG/JPEG"}</span>
               <input
@@ -641,7 +641,7 @@ export default function InstructorCourseEditorPage() {
               type="button"
               disabled={!matFile || uploadMaterialMutation.isPending}
               onClick={() => uploadMaterialMutation.mutate()}
-              className="rounded-lg bg-brand-600 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
+              className="nb-btn-primary text-xs"
             >
               {uploadMaterialMutation.isPending ? "Uploading..." : "Upload & Attach"}
             </button>
@@ -651,20 +651,20 @@ export default function InstructorCourseEditorPage() {
             {(course.materials ?? []).map((m) => (
               <li
                 key={m.id}
-                className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-2.5 text-sm"
+                className="flex items-center justify-between border-2 border-[#111827] bg-[#F5F3EC] px-4 py-2.5 text-sm"
               >
                 <a
                   href={getAuthorizedFileUrl(m.file.id)}
                   target="_blank"
                   rel="noreferrer"
-                  className="font-medium text-brand-600 hover:underline"
+                  className="font-mono font-bold text-[#111827] underline"
                 >
                   {m.title} ({m.file.originalName})
                 </a>
                 <button
                   type="button"
                   onClick={() => deleteMaterialMutation.mutate(m.id)}
-                  className="text-xs font-semibold text-red-600 hover:underline"
+                  className="font-mono text-xs font-bold text-red-700 underline"
                 >
                   Remove
                 </button>
@@ -676,30 +676,30 @@ export default function InstructorCourseEditorPage() {
 
       {tab === "assignments" && (
         <div className="space-y-6">
-          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-            <h2 className="text-lg font-bold text-slate-900">Create Assignment</h2>
+          <div className="nb-card p-6 space-y-4">
+            <h2 className="nb-heading text-lg">Create Assignment</h2>
             <input
               type="text"
               placeholder="Assignment title"
               value={assignTitle}
               onChange={(e) => setAssignTitle(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="nb-input"
             />
             <textarea
               rows={3}
               placeholder="Instructions and grading rubric..."
               value={assignDesc}
               onChange={(e) => setAssignDesc(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="nb-input"
             />
-            <div className="flex flex-wrap items-center gap-4 text-xs">
+            <div className="flex flex-wrap items-center gap-4 font-mono text-xs font-bold">
               <label className="flex items-center gap-2">
                 Max Score:
                 <input
                   type="number"
                   value={assignMaxScore}
                   onChange={(e) => setAssignMaxScore(Number(e.target.value) || 100)}
-                  className="w-20 rounded border border-slate-300 px-2 py-1"
+                  className="w-20 border-2 border-[#111827] bg-white px-2 py-1"
                 />
               </label>
               <label className="flex items-center gap-1.5">
@@ -718,7 +718,7 @@ export default function InstructorCourseEditorPage() {
                     min={0}
                     value={assignMaxResub}
                     onChange={(e) => setAssignMaxResub(Number(e.target.value) || 0)}
-                    className="w-16 rounded border border-slate-300 px-2 py-1"
+                    className="w-16 border-2 border-[#111827] bg-white px-2 py-1"
                   />
                 </label>
               )}
@@ -733,9 +733,11 @@ export default function InstructorCourseEditorPage() {
             </div>
             <button
               type="button"
-              disabled={!assignTitle.trim() || !assignDesc.trim() || createAssignmentMutation.isPending}
+              disabled={
+                !assignTitle.trim() || !assignDesc.trim() || createAssignmentMutation.isPending
+              }
               onClick={() => createAssignmentMutation.mutate()}
-              className="rounded-lg bg-brand-600 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
+              className="nb-btn-primary text-xs"
             >
               Publish Assignment
             </button>
@@ -743,13 +745,10 @@ export default function InstructorCourseEditorPage() {
 
           <div className="space-y-3">
             {(assignmentsQuery.data ?? []).map((a) => (
-              <div
-                key={a.id}
-                className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
-              >
+              <div key={a.id} className="nb-card flex items-center justify-between p-4">
                 <div>
-                  <p className="font-bold text-slate-900">{a.title}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="font-mono font-bold text-[#111827]">{a.title}</p>
+                  <p className="font-mono text-xs text-slate-700">
                     Max Score: {a.maxScore} · {a._count?.submissions ?? 0} submissions
                   </p>
                 </div>
@@ -761,15 +760,15 @@ export default function InstructorCourseEditorPage() {
 
       {tab === "quizzes" && (
         <div className="space-y-6">
-          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-            <h2 className="text-lg font-bold text-slate-900">Create Quiz</h2>
+          <div className="nb-card p-6 space-y-4">
+            <h2 className="nb-heading text-lg">Create Quiz</h2>
             <div className="grid gap-3 sm:grid-cols-3">
               <input
                 type="text"
                 placeholder="Quiz title"
                 value={quizTitle}
                 onChange={(e) => setQuizTitle(e.target.value)}
-                className="rounded-lg border border-slate-300 px-3 py-2 text-sm sm:col-span-1"
+                className="nb-input"
               />
               <input
                 type="number"
@@ -777,7 +776,7 @@ export default function InstructorCourseEditorPage() {
                 value={quizLimit}
                 onChange={(e) => setQuizLimit(Number(e.target.value) || 20)}
                 placeholder="Time limit (min)"
-                className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="nb-input"
               />
               <input
                 type="number"
@@ -785,33 +784,32 @@ export default function InstructorCourseEditorPage() {
                 value={quizPass}
                 onChange={(e) => setQuizPass(Number(e.target.value) || 1)}
                 placeholder="Passing score"
-                className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="nb-input"
               />
             </div>
             <button
               type="button"
               disabled={!quizTitle.trim() || createQuizMutation.isPending}
               onClick={() => createQuizMutation.mutate()}
-              className="rounded-lg bg-brand-600 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
+              className="nb-btn-primary text-xs"
             >
               Create Quiz
             </button>
           </div>
 
           {(quizzesQuery.data ?? []).map((q) => (
-            <div
-              key={q.id}
-              className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4"
-            >
+            <div key={q.id} className="nb-card p-6 space-y-4">
               <div>
-                <h3 className="text-base font-bold text-slate-900">{q.title}</h3>
-                <p className="text-xs text-slate-500">
+                <h3 className="nb-heading text-base">{q.title}</h3>
+                <p className="font-mono text-xs text-slate-700">
                   {q._count?.questions ?? 0} questions · {q.timeLimitMinutes} min · Passing:{" "}
                   {q.passingScore}
                 </p>
               </div>
-              <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-4">
-                <p className="text-xs font-semibold text-slate-700">Add Multiple-Choice Question</p>
+              <div className="space-y-2 border-2 border-[#111827] bg-[#F5F3EC] p-4">
+                <p className="font-mono text-xs font-bold uppercase text-[#111827]">
+                  Add Multiple-Choice Question
+                </p>
                 <input
                   type="text"
                   placeholder="Question prompt..."
@@ -819,7 +817,7 @@ export default function InstructorCourseEditorPage() {
                   onChange={(e) =>
                     setQuestionPrompt((p) => ({ ...p, [q.id]: e.target.value }))
                   }
-                  className="w-full rounded border border-slate-300 bg-white px-3 py-1.5 text-sm"
+                  className="nb-input"
                 />
                 <div className="grid gap-2 sm:grid-cols-2">
                   <input
@@ -827,14 +825,14 @@ export default function InstructorCourseEditorPage() {
                     placeholder="Option 1"
                     value={opt1[q.id] ?? ""}
                     onChange={(e) => setOpt1((p) => ({ ...p, [q.id]: e.target.value }))}
-                    className="rounded border border-slate-300 bg-white px-3 py-1.5 text-sm"
+                    className="nb-input"
                   />
                   <input
                     type="text"
                     placeholder="Option 2"
                     value={opt2[q.id] ?? ""}
                     onChange={(e) => setOpt2((p) => ({ ...p, [q.id]: e.target.value }))}
-                    className="rounded border border-slate-300 bg-white px-3 py-1.5 text-sm"
+                    className="nb-input"
                   />
                 </div>
                 <div className="flex items-center justify-between">
@@ -843,7 +841,7 @@ export default function InstructorCourseEditorPage() {
                     onChange={(e) =>
                       setCorrectIdx((p) => ({ ...p, [q.id]: Number(e.target.value) }))
                     }
-                    className="rounded border border-slate-300 bg-white px-2.5 py-1 text-xs"
+                    className="border-2 border-[#111827] bg-white px-2.5 py-1 font-mono text-xs font-bold"
                   >
                     <option value={0}>Option 1 is Correct</option>
                     <option value={1}>Option 2 is Correct</option>
@@ -852,7 +850,7 @@ export default function InstructorCourseEditorPage() {
                     type="button"
                     disabled={addQuestionMutation.isPending}
                     onClick={() => addQuestionMutation.mutate(q.id)}
-                    className="rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-semibold text-white"
+                    className="nb-btn-primary text-xs"
                   >
                     Add Question
                   </button>
@@ -864,16 +862,16 @@ export default function InstructorCourseEditorPage() {
       )}
 
       {tab === "students" && (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-900">Enrolled Students</h2>
+        <div className="nb-card p-6">
+          <h2 className="nb-heading text-lg">Enrolled Students</h2>
           {studentsQuery.isLoading ? (
             <LoadingState message="Loading roster..." />
           ) : (studentsQuery.data ?? []).length === 0 ? (
-            <p className="mt-4 text-sm text-slate-500">No students enrolled yet.</p>
+            <p className="mt-4 text-sm text-slate-600">No students enrolled yet.</p>
           ) : (
             <div className="mt-4 overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="border-b border-slate-200 text-xs uppercase text-slate-500">
+                <thead className="border-b-2 border-[#111827] font-mono text-xs uppercase text-[#111827]">
                   <tr>
                     <th className="py-2 pr-4">Student</th>
                     <th className="py-2 pr-4">Email</th>
@@ -881,15 +879,15 @@ export default function InstructorCourseEditorPage() {
                     <th className="py-2">Progress</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[#111827]/15">
                   {(studentsQuery.data ?? []).map((s) => (
                     <tr key={s.enrollmentId}>
-                      <td className="py-2.5 pr-4 font-medium text-slate-900">{s.student.name}</td>
-                      <td className="py-2.5 pr-4 text-slate-600">{s.student.email}</td>
+                      <td className="py-2.5 pr-4 font-bold text-[#111827]">{s.student.name}</td>
+                      <td className="py-2.5 pr-4 text-slate-700">{s.student.email}</td>
                       <td className="py-2.5 pr-4">
                         <StatusBadge value={s.status} />
                       </td>
-                      <td className="py-2.5 font-semibold text-slate-800">
+                      <td className="py-2.5 font-mono font-bold text-[#111827]">
                         {s.progressPercent}% ({s.completedLessons}/{s.totalLessons})
                       </td>
                     </tr>
@@ -902,25 +900,25 @@ export default function InstructorCourseEditorPage() {
       )}
 
       {tab === "settings" && (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-          <h2 className="text-lg font-bold text-slate-900">Course Metadata</h2>
+        <div className="nb-card p-6 space-y-4">
+          <h2 className="nb-heading text-lg">Course Metadata</h2>
           <input
             type="text"
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            className="nb-input"
           />
           <div className="grid gap-4 sm:grid-cols-2">
             <input
               type="text"
               value={editCategory}
               onChange={(e) => setEditCategory(e.target.value)}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="nb-input"
             />
             <select
               value={editDiff}
               onChange={(e) => setEditDiff(e.target.value as DifficultyLevel)}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+              className="nb-input"
             >
               <option value="BEGINNER">Beginner</option>
               <option value="INTERMEDIATE">Intermediate</option>
@@ -931,13 +929,13 @@ export default function InstructorCourseEditorPage() {
             rows={4}
             value={editDesc}
             onChange={(e) => setEditDesc(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            className="nb-input"
           />
           <button
             type="button"
             disabled={saveSettingsMutation.isPending}
             onClick={() => saveSettingsMutation.mutate()}
-            className="rounded-lg bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700"
+            className="nb-btn-primary text-xs"
           >
             Save Changes
           </button>

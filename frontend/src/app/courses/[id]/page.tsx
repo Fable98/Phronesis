@@ -29,12 +29,11 @@ export default function CourseDetailPage() {
   });
 
   const enrollMutation = useMutation({
-    mutationFn: async () => {
-      return apiRequest<{ enrollment: Enrollment }>("/enrollments", {
+    mutationFn: async () =>
+      apiRequest<{ enrollment: Enrollment }>("/enrollments", {
         method: "POST",
         body: JSON.stringify({ courseId: params.id })
-      });
-    },
+      }),
     onSuccess: async () => {
       setActionError(null);
       await queryClient.invalidateQueries({ queryKey: ["course", params.id] });
@@ -48,16 +47,14 @@ export default function CourseDetailPage() {
 
   const course = data?.course;
   const enrollment = data?.enrollment;
-  const isEnrolled = enrollment !== null && enrollment !== undefined && enrollment.status !== "DROPPED";
+  const isEnrolled =
+    enrollment !== null && enrollment !== undefined && enrollment.status !== "DROPPED";
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#F5F3EC]">
       <Navbar />
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-        <Link
-          href="/courses"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900"
-        >
+        <Link href="/courses" className="nb-btn-secondary text-xs">
           <ArrowLeft className="h-4 w-4" /> Back to catalog
         </Link>
 
@@ -71,42 +68,59 @@ export default function CourseDetailPage() {
             />
           ) : (
             <div className="space-y-8">
-              <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+              <div className="nb-card-mustard p-8">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">
+                  <span className="border-2 border-[#111827] bg-white px-2.5 py-0.5 font-mono text-xs font-bold uppercase text-[#111827]">
                     {course.category}
                   </span>
                   <StatusBadge value={course.difficultyLevel} />
                   <StatusBadge value={course.status} />
                 </div>
 
-                <h1 className="mt-3 text-3xl font-bold text-slate-900">{course.title}</h1>
-                <p className="mt-3 text-slate-600 leading-relaxed">{course.description}</p>
+                <h1 className="mt-4 nb-heading text-3xl">{course.title}</h1>
+                <p className="mt-3 text-sm font-medium leading-relaxed text-[#111827]/90">
+                  {course.description}
+                </p>
 
-                <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-6">
-                  <div className="text-sm text-slate-600">
-                    Instructor:{" "}
-                    <strong className="font-semibold text-slate-900">
-                      {course.instructor?.name ?? "Faculty"}
-                    </strong>
+                <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                  <div className="border-2 border-[#111827] bg-[#F8CE46] p-3">
+                    <p className="font-mono text-xl font-bold">{course.modules?.length ?? 0}</p>
+                    <p className="text-xs font-medium">modules</p>
+                  </div>
+                  <div className="border-2 border-[#111827] bg-[#F8CE46] p-3">
+                    <p className="font-mono text-xl font-bold">
+                      {course._count?.enrollments ?? 0}
+                    </p>
+                    <p className="text-xs font-medium">students enrolled</p>
+                  </div>
+                  <div className="border-2 border-[#111827] bg-[#F8CE46] p-3">
+                    <p className="font-mono text-xl font-bold">
+                      {course._count?.quizzes ?? 0}
+                    </p>
+                    <p className="text-xs font-medium">assessments</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t-2 border-[#111827] pt-5">
+                  <div className="text-sm">
+                    <p className="font-mono font-bold text-[#111827]">
+                      Instructor: {course.instructor?.name ?? "Faculty"}
+                    </p>
                     {course.instructor?.bio && (
-                      <p className="mt-0.5 text-xs text-slate-500">{course.instructor.bio}</p>
+                      <p className="mt-0.5 text-xs text-[#111827]/80">{course.instructor.bio}</p>
                     )}
                   </div>
 
                   <div>
                     {!user ? (
-                      <Link
-                        href="/login"
-                        className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700"
-                      >
+                      <Link href="/login" className="nb-btn-primary">
                         Sign in to Enroll
                       </Link>
                     ) : user.role === "STUDENT" ? (
                       isEnrolled ? (
                         <Link
                           href={`/student/courses/${course.id}/learn`}
-                          className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
+                          className="nb-btn-primary"
                         >
                           <PlayCircle className="h-4 w-4" />
                           Continue Learning
@@ -116,15 +130,19 @@ export default function CourseDetailPage() {
                           type="button"
                           disabled={enrollMutation.isPending}
                           onClick={() => enrollMutation.mutate()}
-                          className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
+                          className="nb-btn-primary"
                         >
                           {enrollMutation.isPending ? "Enrolling..." : "Enroll in Course"}
                         </button>
                       )
                     ) : (
                       <Link
-                        href={user.role === "ADMIN" ? "/admin/courses" : `/instructor/courses/${course.id}`}
-                        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        href={
+                          user.role === "ADMIN"
+                            ? "/admin/courses"
+                            : `/instructor/courses/${course.id}`
+                        }
+                        className="nb-btn-secondary"
                       >
                         Manage Course
                       </Link>
@@ -133,38 +151,38 @@ export default function CourseDetailPage() {
                 </div>
 
                 {actionError && (
-                  <p className="mt-3 text-sm text-red-600" role="alert">
+                  <p className="mt-3 text-sm font-bold text-red-800" role="alert">
                     {actionError}
                   </p>
                 )}
               </div>
 
-              <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-                <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-brand-600" />
+              <div className="nb-card p-8">
+                <h2 className="nb-heading text-xl flex items-center gap-2">
+                  <BookOpen className="h-5 w-5" />
                   Course Syllabus
                 </h2>
 
                 {!course.modules || course.modules.length === 0 ? (
-                  <p className="mt-4 text-sm text-slate-500">No modules added yet.</p>
+                  <p className="mt-4 text-sm text-slate-600">No modules added yet.</p>
                 ) : (
                   <div className="mt-5 space-y-4">
                     {course.modules.map((mod) => (
-                      <div key={mod.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                        <h3 className="font-semibold text-slate-900">
+                      <div key={mod.id} className="border-2 border-[#111827] bg-[#F5F3EC] p-4">
+                        <h3 className="font-mono font-bold text-[#111827]">
                           {mod.position}. {mod.title}
                         </h3>
                         {mod.description && (
-                          <p className="mt-1 text-xs text-slate-600">{mod.description}</p>
+                          <p className="mt-1 text-xs text-slate-700">{mod.description}</p>
                         )}
-                        <ul className="mt-3 divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white">
+                        <ul className="mt-3 divide-y-2 divide-[#111827]/15 border-2 border-[#111827] bg-white">
                           {mod.lessons.map((lesson) => (
                             <li
                               key={lesson.id}
                               className="flex items-center justify-between px-4 py-2.5 text-sm"
                             >
-                              <span className="font-medium text-slate-800">{lesson.title}</span>
-                              <span className="inline-flex items-center gap-1 text-xs text-slate-500">
+                              <span className="font-medium text-[#111827]">{lesson.title}</span>
+                              <span className="inline-flex items-center gap-1 font-mono text-xs font-bold text-slate-700">
                                 <Clock className="h-3.5 w-3.5" />
                                 {lesson.durationMinutes} min
                               </span>
@@ -178,32 +196,34 @@ export default function CourseDetailPage() {
               </div>
 
               {course.materials && course.materials.length > 0 && (
-                <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-                  <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-brand-600" />
+                <div className="nb-card p-8">
+                  <h2 className="nb-heading text-xl flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
                     Course Materials
                   </h2>
                   <ul className="mt-4 space-y-2">
                     {course.materials.map((mat) => (
                       <li
                         key={mat.id}
-                        className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3 text-sm"
+                        className="flex items-center justify-between border-2 border-[#111827] bg-[#F5F3EC] px-4 py-3 text-sm"
                       >
                         <div>
-                          <p className="font-medium text-slate-900">{mat.title}</p>
-                          <p className="text-xs text-slate-500">{mat.file.originalName}</p>
+                          <p className="font-bold text-[#111827]">{mat.title}</p>
+                          <p className="font-mono text-xs text-slate-600">{mat.file.originalName}</p>
                         </div>
                         {isEnrolled || user?.role === "ADMIN" || user?.id === course.instructorId ? (
                           <a
                             href={getAuthorizedFileUrl(mat.file.id)}
                             target="_blank"
                             rel="noreferrer"
-                            className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                            className="nb-btn-secondary text-xs"
                           >
                             Download
                           </a>
                         ) : (
-                          <span className="text-xs text-slate-400">Enroll to access</span>
+                          <span className="font-mono text-xs font-bold text-slate-500">
+                            Enroll to access
+                          </span>
                         )}
                       </li>
                     ))}

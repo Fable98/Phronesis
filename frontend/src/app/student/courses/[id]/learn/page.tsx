@@ -55,11 +55,9 @@ export default function StudentCourseLearnPage() {
   const [feedbackBanner, setFeedbackBanner] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
-  // Assignment submission state
   const [submissionText, setSubmissionText] = useState<Record<string, string>>({});
   const [submissionFile, setSubmissionFile] = useState<Record<string, File | null>>({});
 
-  // Quiz taking state
   const [activeAttempt, setActiveAttempt] = useState<{
     attempt: QuizAttempt;
     questions: Question[];
@@ -119,7 +117,8 @@ export default function StudentCourseLearnPage() {
   }, [orderedLessons, selectedLessonId]);
 
   const currentLessonIndex = orderedLessons.findIndex((l) => l.id === selectedLessonId);
-  const currentLesson = currentLessonIndex >= 0 ? orderedLessons[currentLessonIndex] : orderedLessons[0];
+  const currentLesson =
+    currentLessonIndex >= 0 ? orderedLessons[currentLessonIndex] : orderedLessons[0];
 
   const lessonDetailQuery = useQuery({
     queryKey: ["lesson", currentLesson?.id],
@@ -132,7 +131,6 @@ export default function StudentCourseLearnPage() {
     }
   });
 
-  // Countdown timer for active quiz attempt
   useEffect(() => {
     if (!activeAttempt) {
       setSecondsLeft(null);
@@ -151,12 +149,11 @@ export default function StudentCourseLearnPage() {
   }, [activeAttempt]);
 
   const completeLessonMutation = useMutation({
-    mutationFn: async (lessonId: string) => {
-      return apiRequest<{ progress: CourseProgress; enrollmentStatus: string }>(
+    mutationFn: async (lessonId: string) =>
+      apiRequest<{ progress: CourseProgress; enrollmentStatus: string }>(
         `/lessons/${lessonId}/complete`,
         { method: "POST" }
-      );
-    },
+      ),
     onSuccess: async () => {
       setActionError(null);
       setFeedbackBanner("Lesson marked complete!");
@@ -200,12 +197,11 @@ export default function StudentCourseLearnPage() {
   });
 
   const startQuizMutation = useMutation({
-    mutationFn: async (quizId: string) => {
-      return apiRequest<{ attempt: QuizAttempt; questions: Question[] }>(
+    mutationFn: async (quizId: string) =>
+      apiRequest<{ attempt: QuizAttempt; questions: Question[] }>(
         `/quizzes/${quizId}/attempts`,
         { method: "POST" }
-      );
-    },
+      ),
     onSuccess: (res) => {
       setActionError(null);
       setQuizResult(null);
@@ -213,10 +209,14 @@ export default function StudentCourseLearnPage() {
       setActiveAttempt(res.data);
     },
     onError: async (err) => {
-      if (err instanceof ApiError && err.status === 409 && err.details && typeof err.details === "object") {
+      if (
+        err instanceof ApiError &&
+        err.status === 409 &&
+        err.details &&
+        typeof err.details === "object"
+      ) {
         const details = err.details as { attemptId?: string };
         if (details.attemptId) {
-          // Resume existing IN_PROGRESS attempt
           const res = await apiRequest<{
             attempt: QuizAttempt;
             quiz: { questions: Question[] };
@@ -284,29 +284,29 @@ export default function StudentCourseLearnPage() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="nb-card-mustard p-5">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">
+            <span className="border-2 border-[#111827] bg-white px-2 py-0.5 font-mono text-[11px] font-bold uppercase text-[#111827]">
               {course.category}
-            </p>
-            <h1 className="text-xl font-bold text-slate-900">{course.title}</h1>
+            </span>
+            <h1 className="mt-2 nb-heading text-2xl">{course.title}</h1>
           </div>
-          <div className="w-full sm:w-56">
-            <div className="flex justify-between text-xs font-medium text-slate-600">
+          <div className="w-full sm:w-56 border-2 border-[#111827] bg-white p-3">
+            <div className="flex justify-between font-mono text-xs font-bold text-[#111827]">
               <span>Course Progress</span>
               <span>{pct}%</span>
             </div>
-            <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="mt-1.5 h-3 w-full border-2 border-[#111827] bg-[#F5F3EC]">
               <div
-                className="h-full rounded-full bg-emerald-600 transition-all"
+                className="h-full bg-[#A9D8B8] transition-all"
                 style={{ width: `${pct}%` }}
               />
             </div>
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+        <div className="mt-4 flex flex-wrap gap-2 border-t-2 border-[#111827] pt-4">
           {(
             [
               { id: "lessons", label: "Lessons", icon: Circle },
@@ -325,10 +325,10 @@ export default function StudentCourseLearnPage() {
                   setFeedbackBanner(null);
                   setActionError(null);
                 }}
-                className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition ${
+                className={`inline-flex items-center gap-1.5 border-2 border-[#111827] px-3.5 py-2 font-mono text-xs font-bold transition ${
                   activeTab === t.id
-                    ? "bg-brand-600 text-white"
-                    : "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+                    ? "bg-[#111827] text-white"
+                    : "bg-white text-[#111827] hover:bg-[#F5F3EC]"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -341,22 +341,25 @@ export default function StudentCourseLearnPage() {
 
       {feedbackBanner && <SuccessBanner message={feedbackBanner} />}
       {actionError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        <div
+          className="border-2 border-[#111827] bg-red-100 px-4 py-3 text-sm font-bold text-[#111827]"
+          role="alert"
+        >
           {actionError}
         </div>
       )}
 
       {activeTab === "lessons" && (
         <div className="grid gap-6 lg:grid-cols-12">
-          <div className="lg:col-span-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm h-fit">
-            <h2 className="text-sm font-bold text-slate-900">Curriculum</h2>
+          <div className="lg:col-span-4 nb-card p-4 h-fit">
+            <h2 className="nb-heading text-sm">Curriculum</h2>
             <div className="mt-3 space-y-4">
               {(course.modules ?? []).map((mod) => (
                 <div key={mod.id}>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <p className="font-mono text-xs font-bold uppercase text-slate-700">
                     {mod.position}. {mod.title}
                   </p>
-                  <ul className="mt-2 space-y-1">
+                  <ul className="mt-2 space-y-1.5">
                     {mod.lessons.map((lesson) => {
                       const done = completedSet.has(lesson.id);
                       const active = currentLesson?.id === lesson.id;
@@ -368,16 +371,20 @@ export default function StudentCourseLearnPage() {
                               setSelectedLessonId(lesson.id);
                               setFeedbackBanner(null);
                             }}
-                            className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium transition ${
+                            className={`flex w-full items-center gap-2 border-2 px-2.5 py-2 text-left text-xs font-bold transition ${
                               active
-                                ? "bg-brand-50 text-brand-700"
-                                : "text-slate-700 hover:bg-slate-100"
+                                ? "border-[#111827] bg-[#111827] text-white"
+                                : "border-[#111827]/20 bg-[#F5F3EC] text-[#111827] hover:border-[#111827]"
                             }`}
                           >
                             {done ? (
-                              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                              <CheckCircle2
+                                className={`h-4 w-4 shrink-0 ${
+                                  active ? "text-[#A9D8B8]" : "text-emerald-700"
+                                }`}
+                              />
                             ) : (
-                              <Circle className="h-4 w-4 shrink-0 text-slate-400" />
+                              <Circle className="h-4 w-4 shrink-0 opacity-60" />
                             )}
                             <span className="truncate flex-1">{lesson.title}</span>
                           </button>
@@ -390,15 +397,15 @@ export default function StudentCourseLearnPage() {
             </div>
           </div>
 
-          <div className="lg:col-span-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="lg:col-span-8 nb-card p-6">
             {!currentLesson ? (
-              <p className="text-sm text-slate-500">No published lessons available in this course.</p>
+              <p className="text-sm text-slate-600">No published lessons available in this course.</p>
             ) : (
               <div className="space-y-5">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-[#111827] pb-4">
                   <div>
-                    <h2 className="text-xl font-bold text-slate-900">{currentLesson.title}</h2>
-                    <p className="mt-1 flex items-center gap-1 text-xs text-slate-500">
+                    <h2 className="nb-heading text-xl">{currentLesson.title}</h2>
+                    <p className="mt-1 flex items-center gap-1 font-mono text-xs font-bold text-slate-700">
                       <Clock className="h-3.5 w-3.5" />
                       {currentLesson.durationMinutes} minutes
                     </p>
@@ -408,10 +415,10 @@ export default function StudentCourseLearnPage() {
                     type="button"
                     disabled={completeLessonMutation.isPending || completedSet.has(currentLesson.id)}
                     onClick={() => completeLessonMutation.mutate(currentLesson.id)}
-                    className={`inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-semibold transition ${
+                    className={`inline-flex items-center gap-1.5 border-2 border-[#111827] px-4 py-2 font-mono text-xs font-bold shadow-[3px_3px_0px_#111827] transition ${
                       completedSet.has(currentLesson.id)
-                        ? "bg-emerald-100 text-emerald-800 cursor-default"
-                        : "bg-emerald-600 text-white hover:bg-emerald-700"
+                        ? "bg-[#A9D8B8] text-[#111827] cursor-default"
+                        : "bg-[#111827] text-white hover:-translate-x-0.5 hover:-translate-y-0.5"
                     }`}
                   >
                     <CheckCircle2 className="h-4 w-4" />
@@ -424,7 +431,7 @@ export default function StudentCourseLearnPage() {
                 </div>
 
                 {currentLesson.videoUrl && (
-                  <div className="aspect-video w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-900">
+                  <div className="aspect-video w-full overflow-hidden border-2 border-[#111827] bg-slate-900">
                     <iframe
                       src={currentLesson.videoUrl}
                       title={currentLesson.title}
@@ -434,16 +441,16 @@ export default function StudentCourseLearnPage() {
                   </div>
                 )}
 
-                <div className="prose prose-slate max-w-none whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
+                <div className="whitespace-pre-wrap text-sm leading-relaxed text-[#111827]">
                   {lessonDetailQuery.data?.lesson.content ?? currentLesson.content}
                 </div>
 
-                <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+                <div className="flex items-center justify-between border-t-2 border-[#111827]/20 pt-4">
                   <button
                     type="button"
                     disabled={currentLessonIndex <= 0}
                     onClick={() => setSelectedLessonId(orderedLessons[currentLessonIndex - 1]!.id)}
-                    className="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40"
+                    className="nb-btn-secondary text-xs"
                   >
                     <ChevronLeft className="h-4 w-4" />
                     Previous Lesson
@@ -452,7 +459,7 @@ export default function StudentCourseLearnPage() {
                     type="button"
                     disabled={currentLessonIndex >= orderedLessons.length - 1}
                     onClick={() => setSelectedLessonId(orderedLessons[currentLessonIndex + 1]!.id)}
-                    className="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40"
+                    className="nb-btn-secondary text-xs"
                   >
                     Next Lesson
                     <ChevronRight className="h-4 w-4" />
@@ -467,7 +474,7 @@ export default function StudentCourseLearnPage() {
       {activeTab === "assignments" && (
         <div className="space-y-4">
           {(assignmentsQuery.data ?? []).length === 0 ? (
-            <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
+            <div className="nb-card p-8 text-center text-sm text-slate-600">
               No published assignments for this course.
             </div>
           ) : (
@@ -478,17 +485,14 @@ export default function StudentCourseLearnPage() {
               const canSubmit = usedAttempts < maxAllowed;
 
               return (
-                <div
-                  key={assignment.id}
-                  className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4"
-                >
+                <div key={assignment.id} className="nb-card p-6 space-y-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <h2 className="text-lg font-bold text-slate-900">{assignment.title}</h2>
-                      <p className="mt-1 text-sm text-slate-600">{assignment.description}</p>
+                      <h2 className="nb-heading text-lg">{assignment.title}</h2>
+                      <p className="mt-1 text-sm text-slate-700">{assignment.description}</p>
                     </div>
-                    <div className="text-right text-xs text-slate-500">
-                      <p className="font-semibold text-slate-800">Max Score: {assignment.maxScore}</p>
+                    <div className="text-right font-mono text-xs font-bold text-[#111827]">
+                      <p>Max Score: {assignment.maxScore}</p>
                       {assignment.dueDate && (
                         <p>Due: {new Date(assignment.dueDate).toLocaleString()}</p>
                       )}
@@ -499,9 +503,9 @@ export default function StudentCourseLearnPage() {
                   </div>
 
                   {latestSub && (
-                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm">
+                    <div className="border-2 border-[#111827] bg-[#F5F3EC] p-4 text-sm">
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="font-semibold text-slate-900">
+                        <span className="font-mono font-bold text-[#111827]">
                           Latest Submission (Attempt #{latestSub.attemptNumber})
                         </span>
                         <div className="flex items-center gap-2">
@@ -510,26 +514,26 @@ export default function StudentCourseLearnPage() {
                         </div>
                       </div>
                       {latestSub.content && (
-                        <p className="mt-2 text-slate-700">{latestSub.content}</p>
+                        <p className="mt-2 text-[#111827]">{latestSub.content}</p>
                       )}
                       {latestSub.file && (
                         <a
                           href={getAuthorizedFileUrl(latestSub.file.id)}
                           target="_blank"
                           rel="noreferrer"
-                          className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:underline"
+                          className="mt-2 inline-flex items-center gap-1 font-mono text-xs font-bold text-[#111827] underline"
                         >
                           <FileText className="h-3.5 w-3.5" />
                           {latestSub.file.originalName}
                         </a>
                       )}
                       {latestSub.status === "GRADED" && (
-                        <div className="mt-3 border-t border-slate-200 pt-2 text-xs">
-                          <p className="font-bold text-emerald-700">
+                        <div className="mt-3 border-t-2 border-[#111827]/20 pt-2 text-xs">
+                          <p className="font-mono font-bold text-[#111827]">
                             Score: {latestSub.score} / {assignment.maxScore}
                           </p>
                           {latestSub.feedback && (
-                            <p className="mt-1 text-slate-600">Feedback: {latestSub.feedback}</p>
+                            <p className="mt-1 text-slate-700">Feedback: {latestSub.feedback}</p>
                           )}
                         </div>
                       )}
@@ -537,7 +541,7 @@ export default function StudentCourseLearnPage() {
                   )}
 
                   {canSubmit && (
-                    <div className="space-y-3 border-t border-slate-100 pt-4">
+                    <div className="space-y-3 border-t-2 border-[#111827]/15 pt-4">
                       <textarea
                         rows={3}
                         placeholder="Write your assignment response..."
@@ -548,13 +552,14 @@ export default function StudentCourseLearnPage() {
                             [assignment.id]: e.target.value
                           }))
                         }
-                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
+                        className="nb-input"
                       />
                       <div className="flex flex-wrap items-center justify-between gap-3">
-                        <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100">
+                        <label className="nb-btn-secondary cursor-pointer text-xs">
                           <Upload className="h-3.5 w-3.5" />
                           <span>
-                            {submissionFile[assignment.id]?.name ?? "Attach PDF/PNG/JPEG (optional)"}
+                            {submissionFile[assignment.id]?.name ??
+                              "Attach PDF/PNG/JPEG (optional)"}
                           </span>
                           <input
                             type="file"
@@ -572,7 +577,7 @@ export default function StudentCourseLearnPage() {
                           type="button"
                           disabled={submitAssignmentMutation.isPending}
                           onClick={() => submitAssignmentMutation.mutate(assignment.id)}
-                          className="rounded-lg bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
+                          className="nb-btn-primary text-xs"
                         >
                           {submitAssignmentMutation.isPending
                             ? "Submitting..."
@@ -593,16 +598,16 @@ export default function StudentCourseLearnPage() {
       {activeTab === "quizzes" && (
         <div className="space-y-6">
           {activeAttempt ? (
-            <div className="rounded-xl border border-brand-200 bg-white p-6 shadow-sm space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
+            <div className="nb-card p-6 space-y-6">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-[#111827] pb-4">
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900">Quiz in Progress</h2>
-                  <p className="text-xs text-slate-500">
+                  <h2 className="nb-heading text-lg">Quiz in Progress</h2>
+                  <p className="text-xs text-slate-700">
                     Select one option per question and submit before the timer expires.
                   </p>
                 </div>
                 {secondsLeft !== null && (
-                  <span className="rounded-lg bg-amber-100 px-3 py-1.5 text-xs font-bold text-amber-800">
+                  <span className="border-2 border-[#111827] bg-[#F8CE46] px-3 py-1.5 font-mono text-xs font-bold text-[#111827]">
                     Time Remaining: {Math.floor(secondsLeft / 60)}:
                     {String(secondsLeft % 60).padStart(2, "0")}
                   </span>
@@ -611,16 +616,20 @@ export default function StudentCourseLearnPage() {
 
               <div className="space-y-5">
                 {activeAttempt.questions.map((q, idx) => (
-                  <div key={q.id} className="rounded-lg border border-slate-200 p-4">
-                    <p className="text-sm font-semibold text-slate-900">
+                  <div
+                    key={q.id}
+                    data-testid="quiz-question"
+                    className="border-2 border-[#111827] bg-[#F5F3EC] p-4"
+                  >
+                    <p className="font-mono text-sm font-bold text-[#111827]">
                       {idx + 1}. {q.prompt}{" "}
-                      <span className="text-xs font-normal text-slate-500">({q.points} pts)</span>
+                      <span className="text-xs font-normal text-slate-700">({q.points} pts)</span>
                     </p>
                     <div className="mt-3 space-y-2">
                       {q.options.map((opt) => (
                         <label
                           key={opt.id}
-                          className="flex cursor-pointer items-center gap-2.5 rounded-lg border border-slate-200 px-3 py-2 text-sm hover:bg-slate-50"
+                          className="flex cursor-pointer items-center gap-2.5 border-2 border-[#111827] bg-white px-3 py-2 text-sm font-medium hover:bg-[#F8CE46]/40"
                         >
                           <input
                             type="radio"
@@ -643,7 +652,7 @@ export default function StudentCourseLearnPage() {
                 type="button"
                 disabled={submitQuizMutation.isPending}
                 onClick={() => submitQuizMutation.mutate(activeAttempt.attempt.id)}
-                className="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
+                className="nb-btn-primary"
               >
                 {submitQuizMutation.isPending ? "Grading..." : "Submit Quiz"}
               </button>
@@ -651,24 +660,21 @@ export default function StudentCourseLearnPage() {
           ) : (
             <div className="space-y-4">
               {(quizzesQuery.data ?? []).length === 0 ? (
-                <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
+                <div className="nb-card p-8 text-center text-sm text-slate-600">
                   No quizzes published in this course yet.
                 </div>
               ) : (
                 (quizzesQuery.data ?? []).map((quiz) => (
-                  <div
-                    key={quiz.id}
-                    className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4"
-                  >
+                  <div key={quiz.id} className="nb-card p-6 space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
-                        <h2 className="text-lg font-bold text-slate-900">{quiz.title}</h2>
+                        <h2 className="nb-heading text-lg">{quiz.title}</h2>
                         {quiz.description && (
-                          <p className="mt-1 text-sm text-slate-600">{quiz.description}</p>
+                          <p className="mt-1 text-sm text-slate-700">{quiz.description}</p>
                         )}
-                        <p className="mt-2 text-xs text-slate-500">
-                          {quiz._count?.questions ?? 0} questions · {quiz.timeLimitMinutes} min · Passing
-                          score: {quiz.passingScore} · Max attempts: {quiz.maxAttempts}
+                        <p className="mt-2 font-mono text-xs font-bold text-slate-700">
+                          {quiz._count?.questions ?? 0} questions · {quiz.timeLimitMinutes} min ·
+                          Passing score: {quiz.passingScore} · Max attempts: {quiz.maxAttempts}
                         </p>
                       </div>
 
@@ -676,27 +682,27 @@ export default function StudentCourseLearnPage() {
                         type="button"
                         disabled={startQuizMutation.isPending}
                         onClick={() => startQuizMutation.mutate(quiz.id)}
-                        className="rounded-lg bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
+                        className="nb-btn-primary text-xs"
                       >
                         Start / Resume Quiz
                       </button>
                     </div>
 
                     {quiz.attempts && quiz.attempts.length > 0 && (
-                      <div className="border-t border-slate-100 pt-3">
-                        <p className="text-xs font-semibold uppercase text-slate-500">
+                      <div className="border-t-2 border-[#111827]/15 pt-3">
+                        <p className="font-mono text-xs font-bold uppercase text-[#111827]">
                           Your Attempts
                         </p>
                         <ul className="mt-2 space-y-2">
                           {quiz.attempts.map((att) => (
                             <li
                               key={att.id}
-                              className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-slate-50 px-3 py-2 text-xs"
+                              className="flex flex-wrap items-center justify-between gap-2 border-2 border-[#111827] bg-[#F5F3EC] px-3 py-2 text-xs"
                             >
                               <div className="flex items-center gap-2">
                                 <StatusBadge value={att.status} />
                                 {att.status !== "IN_PROGRESS" && (
-                                  <span className="font-semibold text-slate-800">
+                                  <span className="font-mono font-bold text-[#111827]">
                                     Score: {att.score ?? 0}/{att.scoreMax} (
                                     {att.passed ? "Passed" : "Did not pass"})
                                   </span>
@@ -706,7 +712,7 @@ export default function StudentCourseLearnPage() {
                                 <button
                                   type="button"
                                   onClick={() => viewResultMutation.mutate(att.id)}
-                                  className="font-semibold text-brand-600 hover:underline"
+                                  className="font-mono font-bold text-[#111827] underline"
                                 >
                                   View Breakdown
                                 </button>
@@ -723,44 +729,32 @@ export default function StudentCourseLearnPage() {
           )}
 
           {quizResult && (
-            <div className="rounded-xl border border-emerald-200 bg-white p-6 shadow-sm space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="nb-card-lilac p-6 space-y-4">
+              <div className="flex items-center justify-between border-b-2 border-[#111827] pb-3">
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">
-                    Result: {quizResult.quiz.title}
-                  </h3>
-                  <p className="text-sm text-slate-600">
-                    Score: <strong>{quizResult.attempt.score}</strong> /{" "}
-                    {quizResult.attempt.scoreMax} ·{" "}
-                    <span
-                      className={
-                        quizResult.attempt.passed
-                          ? "font-semibold text-emerald-700"
-                          : "font-semibold text-red-700"
-                      }
-                    >
-                      {quizResult.attempt.passed ? "PASSED" : "FAILED"}
-                    </span>
+                  <h3 className="nb-heading text-lg">Result: {quizResult.quiz.title}</h3>
+                  <p className="font-mono text-sm font-bold text-[#111827]">
+                    Score: {quizResult.attempt.score} / {quizResult.attempt.scoreMax} ·{" "}
+                    {quizResult.attempt.passed ? "PASSED" : "FAILED"}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setQuizResult(null)}
-                  className="text-xs font-medium text-slate-500 hover:text-slate-800"
+                  className="nb-btn-secondary px-3 py-1 text-xs"
                 >
                   Close
                 </button>
               </div>
               <div className="space-y-3">
                 {quizResult.breakdown.map((b, i) => (
-                  <div key={b.questionId} className="rounded-lg border border-slate-200 p-3 text-sm">
-                    <p className="font-semibold text-slate-900">
+                  <div
+                    key={b.questionId}
+                    className="border-2 border-[#111827] bg-white p-3 text-sm"
+                  >
+                    <p className="font-mono font-bold text-[#111827]">
                       {i + 1}. {b.prompt}{" "}
-                      <span
-                        className={`ml-2 text-xs ${
-                          b.isCorrect ? "text-emerald-700" : "text-red-700"
-                        }`}
-                      >
+                      <span className="ml-2 text-xs">
                         ({b.pointsEarned}/{b.points} pts)
                       </span>
                     </p>
@@ -770,12 +764,12 @@ export default function StudentCourseLearnPage() {
                         return (
                           <li
                             key={o.id}
-                            className={`rounded px-2 py-1 ${
+                            className={`border px-2 py-1 ${
                               o.isCorrect
-                                ? "bg-emerald-50 font-semibold text-emerald-800"
+                                ? "border-[#111827] bg-[#A9D8B8] font-bold"
                                 : selected
-                                  ? "bg-red-50 text-red-700"
-                                  : "text-slate-600"
+                                  ? "border-[#111827] bg-red-200"
+                                  : "border-transparent text-slate-700"
                             }`}
                           >
                             {o.text} {selected ? "(Your choice)" : ""}{" "}
@@ -793,26 +787,26 @@ export default function StudentCourseLearnPage() {
       )}
 
       {activeTab === "materials" && (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-900">Course Materials</h2>
+        <div className="nb-card p-6">
+          <h2 className="nb-heading text-lg">Course Materials</h2>
           {!course.materials || course.materials.length === 0 ? (
-            <p className="mt-3 text-sm text-slate-500">No downloadable materials attached yet.</p>
+            <p className="mt-3 text-sm text-slate-600">No downloadable materials attached yet.</p>
           ) : (
             <ul className="mt-4 space-y-2">
               {course.materials.map((m) => (
                 <li
                   key={m.id}
-                  className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3 text-sm"
+                  className="flex items-center justify-between border-2 border-[#111827] bg-[#F5F3EC] px-4 py-3 text-sm"
                 >
                   <div>
-                    <p className="font-medium text-slate-900">{m.title}</p>
-                    <p className="text-xs text-slate-500">{m.file.originalName}</p>
+                    <p className="font-bold text-[#111827]">{m.title}</p>
+                    <p className="font-mono text-xs text-slate-600">{m.file.originalName}</p>
                   </div>
                   <a
                     href={getAuthorizedFileUrl(m.file.id)}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                    className="nb-btn-secondary text-xs"
                   >
                     Open File
                   </a>

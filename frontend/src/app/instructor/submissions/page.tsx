@@ -54,15 +54,18 @@ export default function InstructorSubmissionsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Grade Submissions</h1>
-        <p className="text-sm text-slate-600">
+        <h1 className="nb-heading text-3xl">Grade Submissions</h1>
+        <p className="text-sm text-slate-700">
           Review student work and record scores and feedback for your courses.
         </p>
       </div>
 
       {banner && <SuccessBanner message={banner} />}
       {errorMsg && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        <div
+          className="border-2 border-[#111827] bg-red-100 px-4 py-3 text-sm font-bold text-[#111827]"
+          role="alert"
+        >
           {errorMsg}
         </div>
       )}
@@ -79,28 +82,29 @@ export default function InstructorSubmissionsPage() {
             return (
               <div
                 key={sub.id}
-                className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4"
+                data-testid="submission-card"
+                className="nb-card p-6 space-y-4"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <StatusBadge value={sub.status} />
                       {sub.isLate && <StatusBadge value="EXPIRED" />}
-                      <span className="text-xs text-slate-500">
+                      <span className="font-mono text-xs font-bold text-slate-700">
                         Attempt #{sub.attemptNumber} · {new Date(sub.submittedAt).toLocaleString()}
                       </span>
                     </div>
-                    <h2 className="mt-2 text-base font-bold text-slate-900">
+                    <h2 className="mt-2 nb-heading text-base">
                       {sub.assignment?.course?.title} — {sub.assignment?.title}
                     </h2>
-                    <p className="text-xs text-slate-600">
+                    <p className="text-xs text-slate-700">
                       Student: <strong>{sub.student?.name}</strong> ({sub.student?.email})
                     </p>
                   </div>
                 </div>
 
                 {sub.content && (
-                  <div className="rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
+                  <div className="border-2 border-[#111827] bg-[#F5F3EC] p-3 text-sm text-[#111827]">
                     {sub.content}
                   </div>
                 )}
@@ -110,16 +114,16 @@ export default function InstructorSubmissionsPage() {
                     href={getAuthorizedFileUrl(sub.file.id)}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:underline"
+                    className="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-[#111827] underline"
                   >
                     <FileText className="h-4 w-4" />
                     View Attached File ({sub.file.originalName})
                   </a>
                 )}
 
-                <div className="grid gap-3 border-t border-slate-100 pt-4 sm:grid-cols-12">
+                <div className="grid gap-3 border-t-2 border-[#111827]/15 pt-4 sm:grid-cols-12">
                   <div className="sm:col-span-3">
-                    <label className="block text-xs font-medium text-slate-700">
+                    <label className="block font-mono text-xs font-bold uppercase text-[#111827]">
                       Score (0–{maxScore})
                     </label>
                     <input
@@ -130,11 +134,11 @@ export default function InstructorSubmissionsPage() {
                       onChange={(e) =>
                         setScores((prev) => ({ ...prev, [sub.id]: e.target.value }))
                       }
-                      className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+                      className="nb-input mt-1"
                     />
                   </div>
                   <div className="sm:col-span-6">
-                    <label className="block text-xs font-medium text-slate-700">
+                    <label className="block font-mono text-xs font-bold uppercase text-[#111827]">
                       Feedback
                     </label>
                     <input
@@ -144,7 +148,7 @@ export default function InstructorSubmissionsPage() {
                         setFeedbacks((prev) => ({ ...prev, [sub.id]: e.target.value }))
                       }
                       placeholder="Constructive feedback..."
-                      className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+                      className="nb-input mt-1"
                     />
                   </div>
                   <div className="flex items-end sm:col-span-3">
@@ -152,7 +156,7 @@ export default function InstructorSubmissionsPage() {
                       type="button"
                       disabled={gradeMutation.isPending}
                       onClick={() => gradeMutation.mutate(sub)}
-                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
+                      className="nb-btn-primary w-full text-xs"
                     >
                       <CheckCircle2 className="h-4 w-4" />
                       {sub.status === "GRADED" ? "Update Grade" : "Save Grade"}
