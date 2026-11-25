@@ -6,6 +6,7 @@ import { env } from "./config/env";
 import { requireCsrf } from "./middleware/csrf";
 import { errorHandler } from "./middleware/errorHandler";
 import { apiRateLimiter } from "./middleware/rateLimit";
+import analyticsRoutes from "./modules/analytics/analytics.routes";
 import assignmentsRoutes from "./modules/assignments/assignments.routes";
 import authRoutes from "./modules/auth/auth.routes";
 import coursesRoutes from "./modules/courses/courses.routes";
@@ -42,6 +43,7 @@ export function createApp() {
   app.use("/api/v1/users", usersRoutes);
   app.use("/api/v1/courses", coursesRoutes);
   app.use("/api/v1/enrollments", enrollmentsRoutes);
+  app.use("/api/v1/analytics", analyticsRoutes);
   app.use("/api/v1", modulesRoutes);
   app.use("/api/v1", lessonsRoutes);
   app.use("/api/v1", progressRoutes);

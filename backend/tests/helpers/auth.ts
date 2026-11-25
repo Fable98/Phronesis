@@ -40,12 +40,19 @@ export async function createUserAndLogin(
 
   const agent = request.agent(app);
   const csrfRes = await agent.get("/api/v1/auth/csrf");
+  if (!csrfRes.body?.data?.csrfToken) {
+    throw new Error(`Failed to fetch CSRF token: status=${csrfRes.status} body=${JSON.stringify(csrfRes.body)}`);
+  }
   const csrfToken = csrfRes.body.data.csrfToken as string;
 
   const loginRes = await agent
     .post("/api/v1/auth/login")
     .set("X-CSRF-Token", csrfToken)
     .send({ email: user.email, password });
+
+  if (!loginRes.body?.data?.csrfToken) {
+    throw new Error(`Failed to login test user: status=${loginRes.status} body=${JSON.stringify(loginRes.body)}`);
+  }
 
   return {
     user,
