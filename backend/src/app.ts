@@ -8,6 +8,8 @@ import { errorHandler } from "./middleware/errorHandler";
 import { apiRateLimiter } from "./middleware/rateLimit";
 import authRoutes from "./modules/auth/auth.routes";
 import coursesRoutes from "./modules/courses/courses.routes";
+import lessonsRoutes from "./modules/lessons/lessons.routes";
+import modulesRoutes from "./modules/modules/modules.routes";
 import usersRoutes from "./modules/users/users.routes";
 import { NotFoundError } from "./utils/errors";
 
@@ -33,6 +35,8 @@ export function createApp() {
   app.use("/api/v1/auth", authRoutes);
   app.use("/api/v1/users", usersRoutes);
   app.use("/api/v1/courses", coursesRoutes);
+  app.use("/api/v1", modulesRoutes);
+  app.use("/api/v1", lessonsRoutes);
 
   app.use((_req, _res, next) => {
     next(new NotFoundError("Endpoint not found"));
